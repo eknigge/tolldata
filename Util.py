@@ -37,7 +37,7 @@ class Constants:
 #--------------------------------------------
 # Transaction File Class
 #--------------------------------------------
-class TransactionFile:
+class TransactionFile(object):
 
 	#--------------------------------------------
 	#Class Variables
@@ -167,19 +167,20 @@ class TransactionFile:
 				#skip instances where OCR blank
 				if j == '':
 					continue
-				#if match increment counter
+				#plate match, increment counter
 				elif j in input_dict and tag_list[c] == input_dict[j]:
 					input_dict[j][0] += 1
-				#mark errors by appending index values
+				#plate match, no tag. flag index values
 				elif j in input_dict and \
 						(np.isnan(tag_list[c])  or\
 						tag_list[c] == ''):
 					index_of_errors.add(c)
 					missed_tag_list[c] = input_dict[j][1]
-				#if not in dict and blank, skip
+				#if not in dict and tag blank, skip
 				elif j not in input_dict and\
 						(tag_list[c] == '' or np.isnan(tag_list[c])):
 					continue
+				#add new entry
 				else:
 					input_dict[j] = [1,tag_list[c]]
 		return input_dict, list(index_of_errors), missed_tag_list
@@ -344,4 +345,36 @@ class TripFile(TransactionFile):
 	#Class Variables
 	#--------------------------------------------
 	header_values = ['Trip ID', 'Entry Time','Fare']
+	ocr_header_names = ['Plate Info']
+	tag_header_names = ['Ag-Tag']
+
+	#--------------------------------------------
+	#Constructor
+	#--------------------------------------------
+
+	def __init__(self,filename):
+		super(TripFile, self).__init__(filename)
+
+	#--------------------------------------------
+	#Methods
+	#--------------------------------------------
+
+	#override super method
+	def create_ocr_header(self):
+		for i in self.ocr_header_names:
+			if i in self.getdf().columns:
+				df = self.getdf()
+				df['OCR_VALUE'] = df[i].str.split(pat='-',expand=True)[0]
+				self._df = df
+
+
+	#override super method
+	def create_tag_ids(self):
+		for i in self.tag_header_names:
+			if i in self.getdf().columns:
+				df = self.getdf()
+				df['TAG_ID'] = df[i].str.split(pat='-',expand=True)[1]
+				df['TAG_ID'] = pd.to_numeric(df['TAG_ID'])
+				self._df = df
+
 
