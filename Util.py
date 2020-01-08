@@ -192,6 +192,14 @@ class TransactionFile:
 				df = df[df['OCR_VALUE'].isin(possible_plates)]
 				return df
 
+	def findTag(self,tag):
+		df = self.getdf()
+		columns = df.columns
+		for i in self.tag_header_names:
+			if i in columns:
+				print(i,tag)
+				return df[df[i] == tag]
+
 	#create OCR_VALUE column
 	def create_ocr_header(self):
 		for i in self.ocr_header_names:
@@ -286,6 +294,8 @@ class TransactionFile:
 	def regular_users(self):
 		df = self.getdf()
 		plate_tag_filename = 'plate_tag_dict.pkl'
+		output_dict_pickle = 'flagged_transactions.pkl'
+		output_dict_csv = 'flagged_transactions.csv'
 
 		#read existing dictionary file
 		try:
@@ -296,7 +306,7 @@ class TransactionFile:
 
 
 		#update plate dictionary with object data
-		#print('size of dictionary:' + str(len(plate_tag_master)))
+		print('size of dictionary:' + str(len(plate_tag_master)))
 		plate_tag_master, error_index, missed_tag_list =\
 				self.create_tag_plate_dict(plate_tag_master)
 		self.save_obj(plate_tag_master, plate_tag_filename)
@@ -305,8 +315,10 @@ class TransactionFile:
 
 		#read or update results file
 		try:
-			df_regulars = pd.read_pickle('flagged_transactions.pkl')
-			df_regulars = pd.concat([df_regulars,df_obj_errors])
+			df_regulars = pd.read_pickle(output_dict_pickle)
+			df_regulars = pd.concat([df_regulars,df_obj_errors],sort=False)
+			df_regulars.to_pickle(output_dict_pickle)
+			print('size of output' + str(df_regulars.shape))
 			df_regulars.to_csv('flagged_transactions.csv')
 		except:
 			df_obj_errors.to_pickle('flagged_transactions.pkl')
