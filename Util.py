@@ -149,7 +149,12 @@ class TransactionFile(object):
 		with open(name, 'rb') as f:
 			return pickle.load(f)
 
-	def create_tag_plate_dict(self,input_dict):
+	def create_tag_plate_dict(self,input_dict,exact_plates=False):
+		"""
+			exact_plates True sets behavior to find exact plate matches. False
+			finds possible plate matches using common OCR errors.
+		"""
+
 		df = self.getdf()
 		tag_list = df['TAG_ID'].tolist()
 		plate_list = df['OCR_VALUE'].tolist()
@@ -158,7 +163,10 @@ class TransactionFile(object):
 
 		for c, i in enumerate(plate_list):
 			#get list of possible plates
-			possible_plates = self.plate_combination(str(i))
+			if exact_plates == False:
+				possible_plates = self.plate_combination(str(i))
+			else:
+				possible_plates = [str(i)]
 
 			#increment missed tag list
 			missed_tag_list.append('')
@@ -168,7 +176,7 @@ class TransactionFile(object):
 				if j == '':
 					continue
 				#plate match, increment counter
-				elif j in input_dict and tag_list[c] == input_dict[j]:
+				elif j in input_dict and tag_list[c] == input_dict[j][1]:
 					input_dict[j][0] += 1
 				#plate match, no tag. flag index values
 				elif j in input_dict and \
@@ -307,9 +315,9 @@ class TransactionFile(object):
 
 
 		#update plate dictionary with object data
-		print('size of dictionary:' + str(len(plate_tag_master)))
 		plate_tag_master, error_index, missed_tag_list =\
-				self.create_tag_plate_dict(plate_tag_master)
+				self.create_tag_plate_dict(plate_tag_master,exact_plates=True)
+		print('size of dictionary:' + str(len(plate_tag_master)))
 		self.save_obj(plate_tag_master, plate_tag_filename)
 		df['MISSED_TAGS'] = pd.Series(missed_tag_list)
 		df_obj_errors = df.iloc[error_index]
@@ -325,6 +333,7 @@ class TransactionFile(object):
 			df_obj_errors.to_pickle('flagged_transactions.pkl')
 			df_obj_errors.to_csv('flagged_transactions.csv')
 
+		pd.DataFrame(plate_tag_master).T.to_csv('dict_output.csv')
 		return plate_tag_master
 
 	#remove all pickle files in directory
