@@ -155,6 +155,11 @@ class TransactionFile(object):
 			finds possible plate matches using common OCR errors.
 		"""
 
+		#set plate threshold
+		#number of read required before transactions with plate are flagged
+		plate_count_threshold = 3
+
+
 		df = self.getdf()
 		tag_list = df['TAG_ID'].tolist()
 		plate_list = df['OCR_VALUE'].tolist()
@@ -181,7 +186,8 @@ class TransactionFile(object):
 				#plate match, no tag. flag index values
 				elif j in input_dict and \
 						(np.isnan(tag_list[c])  or\
-						tag_list[c] == ''):
+						tag_list[c] == '') and\
+						input_dict[j][0] >= plate_count_threshold:
 					index_of_errors.add(c)
 					missed_tag_list[c] = input_dict[j][1]
 				#if not in dict and tag blank, skip
