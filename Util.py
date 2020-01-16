@@ -141,6 +141,17 @@ class TransactionFile(object):
 	#--------------------------------------------
 	# Other Methods
 	#--------------------------------------------
+	def ocrBlank(self):
+		output = True
+		for i in self.ocr_header_names:
+			try:
+				 
+				if self.getdf()[i].describe()[0] != 0:
+					output = False
+			except:
+				pass
+		return output
+
 	def save_obj(self,obj, name):
 		with open(name, 'wb') as f:
 			pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
@@ -217,11 +228,15 @@ class TransactionFile(object):
 
 	#create OCR_VALUE column
 	def create_ocr_header(self):
-		for i in self.ocr_header_names:
-			if i in self.getdf().columns:
-				df = self.getdf()
-				df['OCR_VALUE'] = df[i].str.split(pat='-',expand=True)[0]
-				self._df = df
+		if not self.ocrBlank():
+			for i in self.ocr_header_names:
+				if i in self.getdf().columns:
+					df = self.getdf()
+					df['OCR_VALUE'] = df[i].str.split(pat='-',expand=True)[0]
+					self._df = df
+		else:
+			for i in self.ocr_header_names:
+				self._df['OCR_VALUE'] = self.getdf()[i]
 
 	#create TAG_ID column
 	def create_tag_ids(self):
@@ -373,15 +388,6 @@ class TripFile(TransactionFile):
 	#--------------------------------------------
 	#Methods
 	#--------------------------------------------
-
-	#override super method
-	def create_ocr_header(self):
-		for i in self.ocr_header_names:
-			if i in self.getdf().columns:
-				df = self.getdf()
-				df['OCR_VALUE'] = df[i].str.split(pat='-',expand=True)[0]
-				self._df = df
-
 
 	#override super method
 	def create_tag_ids(self):
