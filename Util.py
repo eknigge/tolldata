@@ -236,7 +236,10 @@ class TransactionFile(object):
 					self._df = df
 		else:
 			for i in self.ocr_header_names:
-				self._df['OCR_VALUE'] = self.getdf()[i]
+				try:
+					self._df['OCR_VALUE'] = self.getdf()[i]
+				except:
+					pass
 
 	#create TAG_ID column
 	def create_tag_ids(self):
