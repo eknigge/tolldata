@@ -1,21 +1,20 @@
 import Util
 import os
 import pandas as pd
+import re
 
 all_files = os.listdir(os.getcwd())
 filtered_file_list = []
 
-#filter for 99 trxn files
+#select files using regular expression
 for i in all_files:
-	if 'SR99' in i and 'trip' in i and 'csv' in i:
-		#change this line to filter for different files
-		filtered_file_list.append(i)
+	m = re.match('\w{8}[\.csv]',i)
+	try:
+		filtered_file_list.append(m.string)
+	except AttributeError:
+		pass
 
-#Process all 99 trxn files
+#check all files
 for i in filtered_file_list:
-	trxn_file = Util.TripFile(i)
-	print("is ocr blank? ", trxn_file.ocrBlank())
-	trxn_file.getdf().head(5).to_csv('temp.csv')
-	print(trxn_file.getdf().head(5))
-
-
+	trx = Util.TNBAnalysis(i)
+	trx.regular_users()

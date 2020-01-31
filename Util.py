@@ -401,4 +401,18 @@ class TripFile(TransactionFile):
 				df['TAG_ID'] = pd.to_numeric(df['TAG_ID'])
 				self._df = df
 
+class TNBAnalysis(TransactionFile):
 
+	#--------------------------------------------
+	#Class Variables
+	#--------------------------------------------
+	header_values = ['id','dt','lane','agency']
+	ocr_header_names = ['plate']
+	tag_header_names = ['tag']
+
+	#--------------------------------------------
+	#Constructor
+	#--------------------------------------------
+
+	def __init__(self,filename):
+		super(TNBAnalysis,self).__init__(filename)
