@@ -112,8 +112,16 @@ class TransactionFile(object):
 
 	def getdf(self):
 		return self._df
+
 	def getFilename(self):
 		return self._filename
+
+	def getTags(self,tags):
+		df = self.getdf()
+		columns = df.columns
+		for i in self.tag_header_names:
+			if i in columns:
+				return df[df['TAG_ID'].isin(tags)]
 	
 
 	#--------------------------------------------
@@ -218,13 +226,6 @@ class TransactionFile(object):
 				df = df[df['OCR_VALUE'].isin(possible_plates)]
 				return df
 
-	def findTag(self,tag):
-		df = self.getdf()
-		columns = df.columns
-		for i in self.tag_header_names:
-			if i in columns:
-				print(i,tag)
-				return df[df[i] == tag]
 
 	#create OCR_VALUE column
 	def create_ocr_header(self):
