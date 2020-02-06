@@ -122,6 +122,20 @@ class TransactionFile(object):
 		for i in self.tag_header_names:
 			if i in columns:
 				return df[df['TAG_ID'].isin(tags)]
+
+	def getPlates(self,plates):
+		possible_plate_list = []
+		for i in plates:
+			tmp = self.plate_combination(str(i))
+			for j in tmp:
+				possible_plate_list.append(j)
+		print(possible_plate_list)
+		for i in self.ocr_header_names:
+			if i in self.getdf().columns:
+				df = self.getdf()
+				df = df[df['OCR_VALUE'].isin(possible_plate_list)]
+				return df
+
 	
 
 	#--------------------------------------------
@@ -217,15 +231,6 @@ class TransactionFile(object):
 				else:
 					input_dict[j] = [1,tag_list[c]]
 		return input_dict, list(index_of_errors), missed_tag_list
-
-	def findPlate(self,plate):
-		possible_plates = self.plate_combination(plate)
-		for i in self.ocr_header_names:
-			if i in self.getdf().columns:
-				df = self.getdf()
-				df = df[df['OCR_VALUE'].isin(possible_plates)]
-				return df
-
 
 	#create OCR_VALUE column
 	def create_ocr_header(self):
