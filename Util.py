@@ -16,22 +16,29 @@ import pickle
 #--------------------------------------------
 # Development Notes: _variables are considered 
 # private variable 
-#
-#
 #--------------------------------------------
 
 #--------------------------------------------
 # Constant Class
 #--------------------------------------------
 class Constants:
+	"""
+	Constant class provides constants for transaction analysis
+	"""
 	_common_ocr_errors = {'O':'Q','Q':'O','8':'B','B':'8','1':'I','I':'1',\
 					'A':'4','4':'A','D':'O','O':'D','G':'6','6':'G',\
 					'S':'5','5':'S'}
 
 	def __init__(self):
+		"""
+		Empty constructor, class cannot be constructed
+		"""
 		pass
 
 	def get_common_ocr_errors():
+		"""
+		Returns dictionary of common OCR errors
+		"""
 		return Constants._common_ocr_errors
 
 #--------------------------------------------
@@ -42,7 +49,7 @@ class TransactionFile(object):
 	#--------------------------------------------
 	#Class Variables
 	#--------------------------------------------
-	sheet_names =['transaction' , 'Transaction','transa','TrxnDetail','Sheet1']
+	sheet_names =['transaction' , 'Transaction','transa','TrxnDetail','Sheet1'] 
 	header_values = ['Trx ID','CSC Lane']
 	ocr_header_names = ['Ocr Info','Plate Info']
 	tag_header_names = ['Number']
@@ -52,6 +59,9 @@ class TransactionFile(object):
 	#Input Validation 
 	#--------------------------------------------
 	def importFile(self,filename):
+		"""
+		Wrapper method for importing files
+		"""
 		#instance variables
 		print('PROCESSING ' + filename)
 		self.setFilename(filename)
@@ -71,6 +81,9 @@ class TransactionFile(object):
 	#Constructor
 	#--------------------------------------------
 	def __init__(self, filename):
+		"""
+		Creates TransactionFile Object from csv or excel file
+		"""
 
 		if isinstance(filename, pd.DataFrame):
 			self._df = filename
@@ -87,6 +100,9 @@ class TransactionFile(object):
 		return map(lambda c: ''.join(c), combinations)
 
 	def find_next_combination(self,input_list, index, combinations):
+		"""
+		Recursive method to search for plate permutations
+		"""
 		if index < len(input_list):
 			c = input_list[index]
 			common_ocr_errors = Constants.get_common_ocr_errors()
@@ -102,6 +118,9 @@ class TransactionFile(object):
 			self.find_next_combination(input_list, index+1, combinations)
 
 	def plate_combination(self,plate):
+		"""
+		Wrapper method for returning plate combinations
+		"""
 		out = []
 		for i in self.near_matches(plate):
 			out.append(i)
@@ -111,12 +130,21 @@ class TransactionFile(object):
 	#--------------------------------------------
 
 	def getdf(self):
+		"""
+		Returns dataframe
+		"""
 		return self._df
 
 	def getFilename(self):
+		"""
+		Return filename
+		"""
 		return self._filename
 
 	def getTags(self,tags):
+		"""
+		Accepts iterable object and return dataframe with tag matches
+		"""
 		df = self.getdf()
 		columns = df.columns
 		for i in self.tag_header_names:
@@ -124,12 +152,14 @@ class TransactionFile(object):
 				return df[df['TAG_ID'].isin(tags)]
 
 	def getPlates(self,plates):
+		"""
+		Accepts iterable object and returns dataframe with plate matches
+		"""
 		possible_plate_list = []
 		for i in plates:
 			tmp = self.plate_combination(str(i))
 			for j in tmp:
 				possible_plate_list.append(j)
-		print(possible_plate_list)
 		for i in self.ocr_header_names:
 			if i in self.getdf().columns:
 				df = self.getdf()
@@ -145,6 +175,9 @@ class TransactionFile(object):
 		self._filename = filename
 
 	def createDf(self,filename,header_row=None):
+		"""
+		Takes excel or csv file and return Pandas dataframe object
+		"""
 		if('xlsx' in filename or 'xls' in filename):
 			print('READ EXCEL FILETYPE')
 			#select sheet to import
@@ -164,6 +197,9 @@ class TransactionFile(object):
 	# Other Methods
 	#--------------------------------------------
 	def ocrBlank(self):
+		"""
+		Returns true if OCR information is blank
+		"""
 		output = True
 		for i in self.ocr_header_names:
 			try:
@@ -175,17 +211,23 @@ class TransactionFile(object):
 		return output
 
 	def save_obj(self,obj, name):
+		"""
+		Save python pickle objects
+		"""
 		with open(name, 'wb') as f:
 			pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 	def load_obj(self,name):
+		"""
+		Read python pickle objects
+		"""
 		with open(name, 'rb') as f:
 			return pickle.load(f)
 
 	def create_tag_plate_dict(self,input_dict,exact_plates=False):
 		"""
-			exact_plates True sets behavior to find exact plate matches. False
-			finds possible plate matches using common OCR errors.
+		Method to create tag/plate dictionary, requires OCR_VALUE and TAG_ID attributes.
+		exact_plates attribute sets whether to turn on plate finding by permutations or exact matches
 		"""
 
 		#set plate threshold
@@ -232,8 +274,10 @@ class TransactionFile(object):
 					input_dict[j] = [1,tag_list[c]]
 		return input_dict, list(index_of_errors), missed_tag_list
 
-	#create OCR_VALUE column
 	def create_ocr_header(self):
+		"""
+		Iterates over ocr_header_names to create OCR_VALUE attribute
+		"""
 		if not self.ocrBlank():
 			for i in self.ocr_header_names:
 				if i in self.getdf().columns:
@@ -247,8 +291,10 @@ class TransactionFile(object):
 				except:
 					pass
 
-	#create TAG_ID column
 	def create_tag_ids(self):
+		"""
+		Iterates over tag_header_names to create TAG_ID attribute
+		"""
 		for i in self.tag_header_names:
 			if i in self.getdf().columns:
 				df = self.getdf()
@@ -256,6 +302,9 @@ class TransactionFile(object):
 				self._df = df
 
 	def toCSV(self):
+		"""
+		Writes output csv file for TransactionFile objects
+		"""
 		for i in self.excel_filetypes:
 			if i in self.getFilename():
 				outputFilename = self.getFilename().replace(i,'csv')
@@ -265,6 +314,9 @@ class TransactionFile(object):
 
 
 	def findHeader(self, dataframe, header_values):
+		"""
+		Find header row in dataframe object
+		"""
 		search_attempts = 50
 		df = dataframe
 		print('HEADER ROW FUNCTION')
@@ -294,6 +346,9 @@ class TransactionFile(object):
 		return header_row
 
 	def findSheet(self,filename,name_list):
+		"""
+		Iterate over sheets in workbook to find data source
+		"""
 		#openpyxl open workbook 
 		print('SELECTING WORKSHEET TO IMPORT:')
 		wb = opxl.load_workbook(filename,read_only=True)
@@ -319,6 +374,9 @@ class TransactionFile(object):
 
 	#select row to import
 	def selectCSVRow(self,filename):
+		"""
+		Selects which CSV row to import user header names
+		"""
 		with open(filename,'r') as csvfile:
 			reader = csv.reader(csvfile)
 			for i, value in enumerate(reader):
@@ -331,6 +389,9 @@ class TransactionFile(object):
 		return header_row
 
 	def regular_users(self):
+		"""
+		Wrapper method for determining missed tag transactions
+		"""
 		df = self.getdf()
 		plate_tag_filename = 'plate_tag_dict.pkl'
 		output_dict_pickle = 'flagged_transactions.pkl'
@@ -368,6 +429,9 @@ class TransactionFile(object):
 
 	#remove all pickle files in directory
 	def removePkl(self):
+		"""
+		Method to remove all 'pkl' files from current working directory
+		"""
 		all_files = os.listdir(os.getcwd())
 		for i in all_files:
 			if 'pkl' in i:
@@ -421,4 +485,7 @@ class TNBAnalysis(TransactionFile):
 	#--------------------------------------------
 
 	def __init__(self,filename):
+		"""
+		Construct TNBAnalysis object using csv or excel data, extends TripTransaction
+		"""
 		super(TNBAnalysis,self).__init__(filename)
