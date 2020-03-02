@@ -15,6 +15,7 @@ test_var = [(109,1309999)]
 for i in all_files:
 	if i == filename:
 		trip_file = Util.TripFile(i)
+		trip_file.getdf().to_csv('temp.csv')
 		trip_file.findTagsInIter(test_var)
 		df = trip_file.getdf()
 		df.to_csv('temp.csv')

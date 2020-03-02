@@ -4,6 +4,7 @@ import openpyxl as opxl
 import csv
 import numpy as np
 import pickle
+import math
 
 
 #--------------------------------------------
@@ -178,11 +179,20 @@ class TransactionFile(object):
 
 	def findTagsInIter(self,range_list):
 		"""
-		Filters dataframe based using iterable of tag tuples (start, end)
+		Filters dataframe based using iterable of tag tuples (start, end), retains None values
 		"""
+		#dataframe based on range_list
 		df = pd.concat(self.findTagsInRange(range_list[i][0],range_list[i][1])\
 				for i in range(0,len(range_list)))
-		self.setDf(df)
+		#empty tag dataframe
+		df_noTag = self.getdf()
+		df_noTag = df_noTag[df_noTag['TAG_ID'].isna()]
+		
+		#combine filtered and empty tag dataframes
+		df_out = pd.concat([df_noTag,df])
+
+		#set object data to filtered dataframe
+		self.setDf(df_out)
 
 	#--------------------------------------------
 	# Mutators
@@ -218,6 +228,7 @@ class TransactionFile(object):
 	#--------------------------------------------
 	# Other Methods
 	#--------------------------------------------
+
 	def ocrBlank(self):
 		"""
 		Returns true if OCR information is blank
