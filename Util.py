@@ -166,7 +166,14 @@ class TransactionFile(object):
 				df = df[df['OCR_VALUE'].isin(possible_plate_list)]
 				return df
 
-	
+	def findTagsInRange(self,start,end):
+		"""
+		Returns dataframe with tags matching start and end of input range
+		"""
+		df = self.getdf()
+		df['TAG_ID'] = pd.to_numeric(df['TAG_ID'])
+		df = df[(df['TAG_ID'] >= start) & (df['TAG_ID'] <= end)]
+		return df
 
 	#--------------------------------------------
 	# Mutators
