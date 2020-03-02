@@ -49,6 +49,7 @@ class TransactionFile(object):
 	#--------------------------------------------
 	#Class Variables
 	#--------------------------------------------
+	_df = None
 	sheet_names =['transaction' , 'Transaction','transa','TrxnDetail','Sheet1'] 
 	header_values = ['Trx ID','CSC Lane']
 	ocr_header_names = ['Ocr Info','Plate Info']
@@ -175,6 +176,14 @@ class TransactionFile(object):
 		df = df[(df['TAG_ID'] >= start) & (df['TAG_ID'] <= end)]
 		return df
 
+	def findTagsInIter(self,range_list):
+		"""
+		Filters dataframe based using iterable of tag tuples (start, end)
+		"""
+		df = pd.concat(self.findTagsInRange(range_list[i][0],range_list[i][1])\
+				for i in range(0,len(range_list)))
+		self.setDf(df)
+
 	#--------------------------------------------
 	# Mutators
 	#--------------------------------------------
@@ -197,6 +206,12 @@ class TransactionFile(object):
 		else:
 			print('UNSUPPORTED FILETYPE')
 		return df
+
+	def setDf(self,dataframe):
+		"""
+		Set object dataframe to input dataframe
+		"""
+		self._df = dataframe
 
 
 
