@@ -55,6 +55,7 @@ class TransactionFile(object):
 	header_values = ['Trx ID','CSC Lane']
 	ocr_header_names = ['Ocr Info','Plate Info']
 	tag_header_names = ['Number']
+	ag_header_names = ['Ag']
 	excel_filetypes = ['xlsx','xls']
 
 	#--------------------------------------------
@@ -168,21 +169,25 @@ class TransactionFile(object):
 				df = df[df['OCR_VALUE'].isin(possible_plate_list)]
 				return df
 
-	def findTagsInRange(self,start,end):
+	def findTagsInRange(self,start,end,ag_tag = 78):
 		"""
 		Returns dataframe with tags matching start and end of input range
 		"""
 		df = self.getdf()
 		df['TAG_ID'] = pd.to_numeric(df['TAG_ID'])
 		df = df[(df['TAG_ID'] >= start) & (df['TAG_ID'] <= end)]
+
+		#filter by ag_tag
+		df = df[df['AG'] == ag_tag]
+
 		return df
 
-	def findTagsInIter(self,range_list):
+	def findTagsInIter(self,range_list, ag_tag = 78):
 		"""
 		Filters dataframe based using iterable of tag tuples (start, end), retains None values
 		"""
 		#dataframe based on range_list
-		df = pd.concat(self.findTagsInRange(range_list[i][0],range_list[i][1])\
+		df = pd.concat(self.findTagsInRange(range_list[i][0],range_list[i][1], ag_tag)\
 				for i in range(0,len(range_list)))
 		#empty tag dataframe
 		df_noTag = self.getdf()
@@ -332,6 +337,13 @@ class TransactionFile(object):
 			if i in self.getdf().columns:
 				df = self.getdf()
 				df['TAG_ID'] = df[i]
+				self._df = df
+
+		#create ag ID
+		for i in self.ag_header_names:
+			if i in self.getdf().columns:
+				df = self.getdf()
+				df['AG'] = df[i]
 				self._df = df
 
 	def toCSV(self):
@@ -495,13 +507,17 @@ class TripFile(TransactionFile):
 	#Methods
 	#--------------------------------------------
 
-	#override super method
+	#override method
 	def create_tag_ids(self):
 		for i in self.tag_header_names:
 			if i in self.getdf().columns:
 				df = self.getdf()
+				#set TAG_ID
 				df['TAG_ID'] = df[i].str.split(pat='-',expand=True)[1]
 				df['TAG_ID'] = pd.to_numeric(df['TAG_ID'])
+				#set AG
+				df['AG'] = df[i].str.split(pat='-',expand=True)[0]
+				df['AG'] = pd.to_numeric(df['AG'])
 				self._df = df
 
 class TNBAnalysis(TransactionFile):
