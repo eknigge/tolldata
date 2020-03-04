@@ -24,7 +24,7 @@ import math
 #--------------------------------------------
 class Constants:
 	"""
-	Constant class provides constants for transaction analysis
+	Constant class for transaction analysis
 	"""
 	_common_ocr_errors = {'O':'Q','Q':'O','8':'B','B':'8','1':'I','I':'1',\
 					'A':'4','4':'A','D':'O','O':'D','G':'6','6':'G',\
@@ -46,6 +46,10 @@ class Constants:
 # Transaction File Class
 #--------------------------------------------
 class TransactionFile(object):
+
+	"""
+	Class to handle processing of transaction files from toll vendors
+	"""
 
 	#--------------------------------------------
 	#Class Variables
@@ -169,25 +173,48 @@ class TransactionFile(object):
 				df = df[df['OCR_VALUE'].isin(possible_plate_list)]
 				return df
 
-	def findTagsInRange(self,start,end,ag_tag = 78):
+	def findTagsInRange(self,start,end,ag_tag = 78, ag_tag_filter = True):
 		"""
-		Returns dataframe with tags matching start and end of input range
+		Return dataframe with tags matching start and end of output
+
+		Args:
+			ag_tag: tag agency, default is 78. Other WA tag ag are 218 and 77
+			ag_tag_filter: Boolean. Whether to filter results based on tag agency
+
+		Returns:
+			dataframe filtered by start and end range
+
+		Raises:
+			None
 		"""
 		df = self.getdf()
 		df['TAG_ID'] = pd.to_numeric(df['TAG_ID'])
 		df = df[(df['TAG_ID'] >= start) & (df['TAG_ID'] <= end)]
 
 		#filter by ag_tag
-		df = df[df['AG'] == ag_tag]
+		if ag_tag_filter:
+			df = df[df['AG'] == ag_tag]
 
 		return df
 
 	def findTagsInIter(self,range_list, ag_tag = 78):
 		"""
-		Filters dataframe based using iterable of tag tuples (start, end), retains None values
+		Modifies parents object using tag tuples, retains  blank tag values
+
+		Args:
+			range_list: iterable of tuples with tag start and end values
+			ag_tag: tag agency, default is 78. Other WA tag ag are 218 and 77
+
+		Returns:
+			None
+
+		Raises:
+			None
 		"""
 		#dataframe based on range_list
-		df = pd.concat(self.findTagsInRange(range_list[i][0],range_list[i][1], ag_tag)\
+		#set ag_tag_filter to False if you do not want to filter dataframe
+		df = pd.concat(self.findTagsInRange(range_list[i][0],\
+				range_list[i][1], ag_tag, ag_tag_filter = True) \
 				for i in range(0,len(range_list)))
 		#empty tag dataframe
 		df_noTag = self.getdf()
@@ -207,7 +234,17 @@ class TransactionFile(object):
 
 	def createDf(self,filename,header_row=None):
 		"""
-		Takes excel or csv file and return Pandas dataframe object
+		Takes excel or csv file and creates Pandas dataframe object
+
+		Args:
+			filename: name of file to be analyzed
+			header_row: int value of header row. Default None. 
+
+		Returns:
+			Pandas dataframe object
+
+		Raises:
+			None
 		"""
 		if('xlsx' in filename or 'xls' in filename):
 			print('READ EXCEL FILETYPE')
