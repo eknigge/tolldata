@@ -61,6 +61,7 @@ class TransactionFile(object):
 	tag_header_names = ['Number']
 	ag_header_names = ['Ag']
 	excel_filetypes = ['xlsx','xls']
+	payment_header_name = ['Pmnt Type']
 
 	#--------------------------------------------
 	#Input Validation 
@@ -226,6 +227,15 @@ class TransactionFile(object):
 		#set object data to filtered dataframe
 		self.setDf(df_out)
 
+	def get_avi_count(self):
+		"""
+		Returns:
+			count of AVI transactions
+		"""
+		df = self.getdf()
+		df = df[df[self.payment_header_name] == 'AVI']
+		return df.shape[0]
+
 	#--------------------------------------------
 	# Mutators
 	#--------------------------------------------
@@ -303,6 +313,7 @@ class TransactionFile(object):
 		"""
 		Method to create tag/plate dictionary, requires OCR_VALUE and TAG_ID attributes.
 		exact_plates attribute sets whether to turn on plate finding by permutations or exact matches
+		dict key: str of plate, values: list [reads, tag_id]
 		"""
 
 		#set plate threshold
@@ -347,6 +358,42 @@ class TransactionFile(object):
 				#add new entry
 				else:
 					input_dict[j] = [1,tag_list[c]]
+		return input_dict, list(index_of_errors), missed_tag_list
+
+	def static_dict_missed_tags(self, input_dict, threshold=5):
+		"""
+		param: plate_tag_dict plate tag dictionary
+		param: threshold number of reads before failure
+		"""
+		df = self.getdf()
+		tag_list = df['TAG_ID'].tolist()
+		plate_list = df['OCR_VALUE'].tolist()
+		index_of_errors = set([]) 
+		missed_tag_list = ['']
+
+		for c, i in enumerate(plate_list):
+
+			#exact plate matches only
+			possible_plates = [i]
+
+			#increment missed tag list
+			missed_tag_list.append('')
+
+			for j in possible_plates:
+				#skip instances where OCR blank
+				if j == '':
+					continue
+				#if not in dict and tag blank, skip
+				elif j not in input_dict and\
+						(tag_list[c] == '' or np.isnan(tag_list[c])):
+					continue
+				#plate match, no tag. flag index values
+				elif j in input_dict and \
+						(np.isnan(tag_list[c])  or\
+						tag_list[c] == '') and\
+						input_dict[j][0] >= threshold:
+					index_of_errors.add(c)
+					missed_tag_list[c] = input_dict[j][1]
 		return input_dict, list(index_of_errors), missed_tag_list
 
 	def create_ocr_header(self):
@@ -470,9 +517,11 @@ class TransactionFile(object):
 		print('CSV HEADER ROW IS: ' + str(header_row))
 		return header_row
 
-	def regular_users(self):
+	def regular_users(self, static_dict=False):
 		"""
 		Wrapper method for determining missed tag transactions
+		param: static_dict boolean for whether to use static or
+		dynamic dictionary file
 		"""
 		df = self.getdf()
 		plate_tag_filename = 'plate_tag_dict.pkl'
@@ -487,11 +536,17 @@ class TransactionFile(object):
 			plate_tag_master = {}
 
 
+		##########################################
 		#update plate dictionary with object data
-		plate_tag_master, error_index, missed_tag_list =\
-				self.create_tag_plate_dict(plate_tag_master,exact_plates=True)
+		##########################################
+		if static_dict == True:
+			plate_tag_master, error_index, missed_tag_list =\
+					self.static_dict_missed_tags(plate_tag_master)
+		else:
+			plate_tag_master, error_index, missed_tag_list =\
+					self.create_tag_plate_dict(plate_tag_master,exact_plates=True)
+			self.save_obj(plate_tag_master, plate_tag_filename)
 		print('size of dictionary:' + str(len(plate_tag_master)))
-		self.save_obj(plate_tag_master, plate_tag_filename)
 		df['MISSED_TAGS'] = pd.Series(missed_tag_list)
 		df_obj_errors = df.iloc[error_index]
 
@@ -575,3 +630,41 @@ class TNBAnalysis(TransactionFile):
 		Construct TNBAnalysis object using csv or excel data, extends TripTransaction
 		"""
 		super(TNBAnalysis,self).__init__(filename)
+
+class AnalysisFunctions:
+	"""
+	Class to Utility functions to process data
+	"""
+
+	def near_matches(self, input):
+		input_list = list(input)
+		combinations = [ input_list ]
+		self.find_next_combination(input_list, 0, combinations)
+		return map(lambda c: ''.join(c), combinations)
+
+	def find_next_combination(self, input_list, index, combinations):
+		"""
+		Recursive method to search for plate permutations
+		"""
+		if index < len(input_list):
+			c = input_list[index]
+			common_ocr_errors = Constants.get_common_ocr_errors()
+
+			if c in common_ocr_errors.keys():
+
+				permuted_list = input_list[:]
+				permuted_list[index] = common_ocr_errors[c]
+
+				combinations.append(permuted_list)
+				self.find_next_combination(permuted_list, index+1, combinations)
+
+			self.find_next_combination(input_list, index+1, combinations)
+
+	def plate_combination(self, plate):
+		"""
+		Wrapper method for returning plate combinations
+		"""
+		out = []
+		for i in self.near_matches(plate):
+			out.append(i)
+		return out
