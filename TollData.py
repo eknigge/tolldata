@@ -308,9 +308,6 @@ class AVIValidation:
             # if plate value blank continue
             if isinstance(i, str) and i == '':
                 continue
-            # if tag value blank, continue
-            elif isinstance(tags[c], float) and np.isnan(tags[c]):
-                continue
 
             plate_combinations = []
             if not self._exact_plates:
