@@ -444,15 +444,15 @@ class AVIValidation:
         self._static_dict = value
 
     def __set_or_create_plate_tag_dict(self, value):
-        found: bool = False
-
-        if isinstance(value, dict):
+        if value is None:
+            return
+        elif isinstance(value, dict):
             self._plate_tag_dict = value
-            found = True
-        elif 'pkl' in self._plate_tag_filename and not found:
+            return
+        elif 'pkl' in self._plate_tag_filename:
             self.__load_pickle()
-            found = True
-        elif 'csv' in value and not found:
+            return
+        elif 'csv' in value:
             self.set_csv_plate_tag(value)
 
     def __init__(self, plate_tag_dict_name=None, dataframe: pd.DataFrame = None,
@@ -852,17 +852,18 @@ class AVITest:
         self._export_error_dataframe = value
 
     def __init__(self, dataframe: pd.DataFrame = None, test_days: np.timedelta64 = None,
-                 n_plates: int = 1000):
+                 n_plates: int = 1000, export_dataframe_errors: bool = False):
         """
         AVI Test constructor
+        :param export_dataframe_errors: Export dataframe containing errors
         :param dataframe: Pandas DataFrame
         :param test_days: Test duration as numpy timedelta64 obj
         :param n_plates: number of plate/tag used for analysis. Setting to 0 uses
         an unlimited size dictionary
         """
         self.set_test_duration(test_days)
-        self.set_dataframe(dataframe)
         self.set_plate_tag_count(n_plates)
+        self.set_export_error_dataframe(export_dataframe_errors)
 
     def set_plate_tag_count(self, value: int):
         """
@@ -878,7 +879,7 @@ class AVITest:
         Set the dataframe for analysis
         :param dataframe: Pandas DataFrame
         """
-        if dataframe is None or dataframe.empty:
+        if isinstance(dataframe, pd.DataFrame) and dataframe.empty:
             raise TypeError('Dataframe cannot be empty')
         self._df_full = dataframe
 
@@ -917,14 +918,14 @@ class AVITest:
         end_date = self._start_date + self._test_days / 2
         df_tag = self._df_full[(self._df_full['DATETIME'] >= self._start_date)
                                & (self._df_full['DATETIME'] <= end_date)]
-        validation = AVIValidation(df_tag)
+        validation = AVIValidation(dataframe=df_tag)
         validation.find_and_mark_missed_avi_reads()
 
         # limit plate/tag dict if n != 0
-        df_out = df_tag
+        df_out = pd.DataFrame(validation.get_plate_tag_dict()).T
         if self._n_plates != 0:
-            df_out = pd.DataFrame(validation.get_dataframe().head(self._n_plates)).T
-        df_out = df_out.sort_values(by=1, ascending=False)
+            df_out = df_out.sort_values(by=1, ascending=False)
+            df_out = df_out.head(self._n_plates)
         self._plate_tag_dict = self.__dict_from_dataframe(df_out)
 
     @staticmethod
@@ -992,7 +993,8 @@ class AVITest:
         # compute metrics
         total_transactions = df_test.shape[0]
         try:
-            error_count = out['AVI_MISMATCH'].value_counts()[True]
+            error_count = out['AVI_MISMATCH'].value_counts()
+            error_count = error_count[True]
         except KeyError:
             error_count = 0
 
@@ -1003,10 +1005,12 @@ class AVITest:
         Run AVI analysis:
         1. Import files for analysis, or use existing pickle file
         2. Select a random start date from the available start dates
-        3. Run the AVI test and compute the metrics
+        3. Build plate/tag dictionary
+        4. Run the AVI test and compute the metrics
         """
         self.__import_analysis_files()
         self.__set_start_date()
+        self.__build_tag_dictionary()
         self.__execute_avi_test()
 
 
