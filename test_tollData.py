@@ -86,6 +86,17 @@ class TestAVIValidation(TestCase):
                                   'DF', 'DF']
                         })
 
+    _test_dict = {'BA': [1234, 5], 'ZB': [3854, 8]}
+
+    def test_dict_constructor(self):
+        validation = td.AVIValidation(plate_tag_dict_name=self._test_dict,
+                                      dataframe=self._df, export_dict=False)
+        plate_tag_dict = validation.get_plate_tag_dict()
+        self.assertEqual(plate_tag_dict['BA'][1], 5)
+        self.assertEqual(plate_tag_dict['ZB'][1], 8)
+        with self.assertRaises(KeyError):
+            plate_tag_dict['Bad Value']
+
     def test_single_error(self):
         avi_validation = td.AVIValidation(dataframe=self._df, export_dict=False)
         avi_validation.find_and_mark_missed_avi_reads()
@@ -100,3 +111,4 @@ class TestAVIValidation(TestCase):
         df_errors = df_errors[df_errors['PLATE'] != 'ABC']
         df_errors = df_errors[df_errors['AVI_MISMATCH'] == True]
         self.assertEqual(df_errors.empty, True)
+

@@ -5,6 +5,7 @@ import pickle
 import numpy as np  # type: ignore
 import datetime
 import random
+import os
 
 
 class PlateCombinatorics:
@@ -264,6 +265,9 @@ class AVIValidation:
     _error_indices: set = set([])
     _export_dict: bool = True
 
+    def get_plate_tag_dict(self) -> dict:
+        return self._plate_tag_dict
+
     def plate_tag_dict_to_csv(self):
         """
         Export tag dictionary as a csv file
@@ -439,12 +443,24 @@ class AVIValidation:
         """
         self._static_dict = value
 
-    def __init__(self, filename: str = '', dataframe: pd.DataFrame = None,
+    def __set_or_create_plate_tag_dict(self, value):
+        found: bool = False
+
+        if isinstance(value, dict):
+            self._plate_tag_dict = value
+            found = True
+        elif 'pkl' in self._plate_tag_filename and not found:
+            self.__load_pickle()
+            found = True
+        elif 'csv' in value and not found:
+            self.set_csv_plate_tag(value)
+
+    def __init__(self, plate_tag_dict_name=None, dataframe: pd.DataFrame = None,
                  static_dict: bool = False, read_threshold: int = 5,
                  exact_plates: bool = True, export_dict: bool = True):
         """
-        :param filename: filename for plate/tag dictionary. Can use a
-        pickle or csv file
+        :param plate_tag_dict_name: file or filename for plate/tag dictionary. Can use a
+        pickle, csv, or Python dict
         :param dataframe: dataframe for analysis
         :param static_dict: bool. Default False. Use a
         dynamic or static dictionary file for analysis
@@ -456,17 +472,13 @@ class AVIValidation:
         :param export_dict: bool. Default True. Export dictionary to pkl
         file
         """
-        self._plate_tag_filename = filename
+        self.__set_or_create_plate_tag_dict(plate_tag_dict_name)
+        self._plate_tag_filename = plate_tag_dict_name
         self._static_dict = static_dict
         self._read_threshold = read_threshold
         self._exact_plates = exact_plates
         self._export_dict = export_dict
         self.__validate_dataframe(dataframe)
-
-        if 'pkl' in self._plate_tag_filename:
-            self.__load_pickle()
-        elif 'csv' in filename:
-            self.set_csv_plate_tag(filename)
 
 
 class RateAssign520:
@@ -801,6 +813,201 @@ class RateAssign99(RateAssign520):
         self.__calculate_base_rate(datetime_value, axles)
         self.__tag_status_adjustment(status)
         self.__pbm_adjustment(self.base_rate, axles)
+
+
+class AVITest:
+    """
+    Class to perform AVI testing. The default test is a minimum of 30 days, but can be set to be longer.
+    This was determined based on experience and practicality of completing and auditing irregularities
+    in the test results.
+
+    Imports files from working directory and creates a pickle file. If a pickle file from a previous
+    run exists, then it is used.
+    """
+    _df_full: pd.DataFrame = None
+    _start_date: np.datetime64 = None
+    _plate_tag_dict: dict = {}
+    _error_count: int = 0
+    _trip_pkl_output_filename: str = 'trip_data.pkl'
+    _trip_file_keyword: str = 'TripTxn'
+    _export_data_to_pickle: bool = True
+    _test_days: np.datetime64 = None
+    _n_plates: int = 0
+    _export_error_dataframe: bool = False
+    _test_result: float = 0.0
+    _export_dataframe_filename: str = 'Transactions_w_Errors.csv'
+
+    def get_test_result(self) -> float:
+        """
+        Return AVI Test result
+        :return: float, result
+        """
+        return self._test_result
+
+    def set_export_error_dataframe(self, value: bool):
+        """
+        Whether to export dataframe to a csv file named
+        :param value: bool
+        """
+        self._export_error_dataframe = value
+
+    def __init__(self, dataframe: pd.DataFrame = None, test_days: np.timedelta64 = None,
+                 n_plates: int = 1000):
+        """
+        AVI Test constructor
+        :param dataframe: Pandas DataFrame
+        :param test_days: Test duration as numpy timedelta64 obj
+        :param n_plates: number of plate/tag used for analysis. Setting to 0 uses
+        an unlimited size dictionary
+        """
+        self.set_test_duration(test_days)
+        self.set_dataframe(dataframe)
+        self.set_plate_tag_count(n_plates)
+
+    def set_plate_tag_count(self, value: int):
+        """
+        Set the plate/tag dictionary size
+        :param value: int
+        """
+        if value < 0:
+            raise ValueError(str(value) + ' is Invalid. Value must be greater than 0')
+        self._n_plates = value
+
+    def set_dataframe(self, dataframe: pd.DataFrame):
+        """
+        Set the dataframe for analysis
+        :param dataframe: Pandas DataFrame
+        """
+        if dataframe is None or dataframe.empty:
+            raise TypeError('Dataframe cannot be empty')
+        self._df_full = dataframe
+
+    def set_test_duration(self, value: np.timedelta64):
+        """
+        Set test duration, must be at least 30 days
+        :param value: Numpy Timedelta64
+        """
+        if value is None:
+            self._test_days = np.timedelta64(30, 'D')
+        elif value < np.timedelta64(30, 'D'):
+            raise ValueError('Test duration' + str(value) + ' is less than 30 days')
+        else:
+            self._test_days = value
+
+    def __set_start_date(self):
+        """
+        Find random test start date
+        """
+        min_date = self._df_full['DATETIME'].min()
+        max_date = self._df_full['DATETIME'].max()
+        difference = max_date - min_date
+        if difference < self._test_days:
+            raise ValueError(str(difference) + 'is less than the number of required'
+                                               'test days of ' + str(self._test_days))
+        range_max = max_date - self._test_days
+        available_dates = pd.date_range(start=min_date, end=range_max, freq='D')
+        self._start_date = pd.Series(available_dates).sample(n=1).values[0]
+
+    def __build_tag_dictionary(self):
+        """
+        Create plate/tag dictionary for the first half of the test duration time
+        period.
+        """
+        print('Building plate/tag dictionary')
+        end_date = self._start_date + self._test_days / 2
+        df_tag = self._df_full[(self._df_full['DATETIME'] >= self._start_date)
+                               & (self._df_full['DATETIME'] <= end_date)]
+        validation = AVIValidation(df_tag)
+        validation.find_and_mark_missed_avi_reads()
+
+        # limit plate/tag dict if n != 0
+        df_out = df_tag
+        if self._n_plates != 0:
+            df_out = pd.DataFrame(validation.get_dataframe().head(self._n_plates)).T
+        df_out = df_out.sort_values(by=1, ascending=False)
+        self._plate_tag_dict = self.__dict_from_dataframe(df_out)
+
+    @staticmethod
+    def __dict_from_dataframe(dataframe: pd.DataFrame) -> dict:
+        """
+        Create a plate/tag dictionary from a Pandas DataFrame
+        :param dataframe: Pandas DataFrame
+        :return: Python dict
+        """
+        keys = dataframe.index
+        tags = dataframe[0].values
+        reads = dataframe[1].values
+        out = {}
+        for c, i in enumerate(keys):
+            out[i] = [float(tags[c]), int(reads[c])]
+        return out
+
+    def __import_analysis_files(self):
+        """
+        Create pickle file or import files and create a pickle file. Creating
+        pickle files reduces time for future script executions.
+        """
+        all_files = os.listdir(os.getcwd())
+        if self._trip_pkl_output_filename in all_files:
+            print('Using existing pickle file')
+            self._df_full = pd.read_pickle(self._trip_pkl_output_filename)
+        else:
+            print('Build pickle file')
+            trip_files = [i for i in all_files if 'csv' in i
+                          and self._trip_file_keyword in i]
+            df_all = pd.concat([TripFile(i).get_df() for i in trip_files])
+            if 'DATETIME' not in df_all.columns:
+                df_all['DATETIME'] = pd.to_datetime(df_all['Entry Time'])
+            self._df_full = df_all
+            if self._export_data_to_pickle:
+                df_all.to_pickle(self._trip_pkl_output_filename)
+
+    def __execute_avi_test(self):
+        """
+        Execute the AVI test in 4 steps.
+        1. filter the dataframe using the second half of the test period. The
+        first half was used to build the plate/tag dictionary.
+        2. Run the AVI analysis
+        3. (optional) export the errors as a csv file
+        4. compute the test metrics
+        """
+        # filter dataframe for analysis period
+        start = self._start_date + self._test_days / 2
+        end = start + self._test_days / 2
+        df_test = self._df_full[(self._df_full['DATETIME'] >= start)
+                                & (self._df_full['DATETIME'] <= end)]
+
+        # run analysis
+        validation = AVIValidation(plate_tag_dict_name=self._plate_tag_dict,
+                                   dataframe=df_test, static_dict=True,
+                                   export_dict=False)
+        validation.find_and_mark_missed_avi_reads()
+        out = validation.get_dataframe()
+
+        # export error DataFrame
+        if self._export_error_dataframe:
+            df_export = out[out['AVI_MISMATCH'] is True]
+            df_export.to_csv(self._export_dataframe_filename)
+
+        # compute metrics
+        total_transactions = df_test.shape[0]
+        try:
+            error_count = out['AVI_MISMATCH'].value_counts()[True]
+        except KeyError:
+            error_count = 0
+
+        self._test_result = 1 - error_count / total_transactions
+
+    def run_analysis(self):
+        """
+        Run AVI analysis:
+        1. Import files for analysis, or use existing pickle file
+        2. Select a random start date from the available start dates
+        3. Run the AVI test and compute the metrics
+        """
+        self.__import_analysis_files()
+        self.__set_start_date()
+        self.__execute_avi_test()
 
 
 if __name__ == '__main__':
