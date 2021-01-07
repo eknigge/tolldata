@@ -280,6 +280,8 @@ class AVIValidation:
         Method to find and mark missed avi reads. Exporting the
         tag dictionary is an optional parameter.
         """
+		#reset DataFrame index for marking missed reads
+		self._df = self._df.reset_index()
         self.__find_missed_avi_reads()
         self.__mark_missed_avi_reads()
         self.__export_tag_dict()
