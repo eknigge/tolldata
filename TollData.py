@@ -594,11 +594,11 @@ class RateAssign520:
         self.trx_type = trx_type
         self.set_holidays(holidays)
         self.pbm = pbm
-        self.__calculate_base_rate(datetime_value, axles)
-        self.__tag_status_adjustment(status)
-        self.__pbm_adjustment(self.base_rate, axles)
+        self.calculate_base_rate(datetime_value, axles)
+        self.tag_status_adjustment(status)
+        self.pbm_adjustment(self.base_rate, axles)
 
-    def __pbm_adjustment(self, base_rate, axles):
+    def pbm_adjustment(self, base_rate, axles):
         """
         :param base_rate: float, base rate
         :param axles: int, number of axles
@@ -629,7 +629,7 @@ class RateAssign520:
         """
         return self.base_rate
 
-    def __tag_status_adjustment(self, status: str):
+    def tag_status_adjustment(self, status: str):
         """
         If tag is not a valid status, set rate based on an
         image transaction
@@ -638,7 +638,7 @@ class RateAssign520:
         if status in self.non_valid_tag_status:
             self.trx_type = 'IMG'
 
-    def __calculate_base_rate(self, date_value: datetime, axles: int):
+    def calculate_base_rate(self, date_value: datetime, axles: int):
         """
         Calculate base rate using datetime and axle information
         :param date_value: datetime
@@ -714,6 +714,9 @@ class RateAssign520:
             return 6
         else:
             return axles
+
+    def test(self):
+        print("inheritance test print")
 
 
 class RateAssign99(RateAssign520):
@@ -809,12 +812,6 @@ class RateAssign99(RateAssign520):
         :param holidays: list datetime.datetime, list of holiday dates
         """
         super().__init__(datetime_value, trx_type, axles, status, pbm, holidays)
-        self.trx_type = trx_type
-        self.set_holidays(holidays)
-        self.pbm = pbm
-        self.__calculate_base_rate(datetime_value, axles)
-        self.__tag_status_adjustment(status)
-        self.__pbm_adjustment(self.base_rate, axles)
 
 
 class AVITest:

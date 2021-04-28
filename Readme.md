@@ -45,3 +45,6 @@ The process works as follows:
 4. Run AVI Validation test and compute metrics
 
 This analysis can be repeated a desired number of times and the `get_test_result` method can be used to aggregate this information.
+
+# Testing Script
+To test this module run `python -m pytest` which will execute the `test_tollData` script. The script is not an exhaustive set of tests, but it should be sufficient to validate any major errors. 
