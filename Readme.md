@@ -17,8 +17,12 @@ This class allows the creation of a rate file object that computes and stores th
 
 Both the `base rate` and `final rate` can be queried. 
 
+The rates contained in the `rate_dict` start with 2 axles for `rate1`, 3 axles for `rate2`, and so on.
+
 # Rate Assign 99
 This class inherits from the 520 class but uses the rate table information for the SR 99 facility. Since these two roadways operate nearly identically there are no other changes between these classes.
+
+Class updated for rates effective October 1, 2021.
 
 # Plate Combinatorics
 This class provides a simple way of determining a set of possible OCR mistakes from common errors. For example, the value of `B` is often mistaken for the numerical value of `8`. A plate with a value of `88` would return the combinations of `BB`, `B8`, `8B`, and `88`. This process is executed for arbitrarily complex plates, using a lookup table of common errors. 

@@ -123,7 +123,7 @@ class TestRateAssign99(TestCase):
         axles = 2
         status = 'V'
         rate = ra.RateAssign99(time, trx_type, axles, status).get_final_rate()
-        self.assertEqual(rate, 1.25)
+        self.assertEqual(rate, 1.45)
 
     def test_morning_holiday_valid_avi_2axle(self):
         time = datetime.datetime(2020, 7, 3, hour=9, minute=15, second=8)
@@ -132,7 +132,7 @@ class TestRateAssign99(TestCase):
         status = 'V'
         rate = ra.RateAssign99(time, trx_type, axles, status,
                                 holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 1.0)
+        self.assertEqual(rate, 1.15)
 
     def test_morning_image_3axle(self):
         time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
@@ -141,7 +141,7 @@ class TestRateAssign99(TestCase):
         status = ''
         rate = ra.RateAssign99(time, trx_type, axles, status,
                                 holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 4.9)
+        self.assertEqual(rate, 5.2)
 
     def test_morning_image_6axle(self):
         time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
@@ -150,7 +150,7 @@ class TestRateAssign99(TestCase):
         status = ''
         rate = ra.RateAssign99(time, trx_type, axles, status,
                                holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 9.75)
+        self.assertEqual(rate, 10.35)
 
 
     def test_evening_holiday_avi_lost_4axle(self):
@@ -160,4 +160,4 @@ class TestRateAssign99(TestCase):
         status = 'L'
         rate = ra.RateAssign99(time, trx_type, axles, status,
                                 holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 6.5)
+        self.assertEqual(rate, 6.3)
