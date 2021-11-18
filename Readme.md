@@ -1,28 +1,42 @@
 # Introduction
-The purpose of this module is to automate and standardize process of toll data by using `Pandas` `DataFrames`. It consists of a `Transaction`, `Trip`, `Rate Assignment`, `AVI Validation`, `AVI Test`, and `Plate Combinatorics` classes. Those are described in `Docs.me` file.
+The purpose of this module is to automate and standardize processing of toll data by using `Pandas`, `Numpy`, and standard Python libraries. The classes contained in this module include
+- **Transaction**. This class processes transaction files and standardizes the input. 
+- **Trip**. This class processes transaction files and standardizes the input. 
+- **Rate Assignment**. This set of classes can assign time-of-day rates for SR 520 and 99 toll facilities. The rates assigned depend on the holiday schedule, number of axles, status of the transponder used, and time of day.
+- **AVI Validation**. This class performs an AVI analysis given a known set of plate/tags (key:value) pairs. If a tag/transponder is missed during a read it is noted in the output.
+- **AVI Test**. This class extends the functionality of the `AVI Validation` class by conducting statistically validated random tests to find the standard deviation from random sample sets. 
+- **Plate Combinatorics**. This helper class computes plate combinatorics, and is useful for other classes in determining common OCR errors found in other classes. 
+
 # Transaction Files
-Transaction files are one of the most common data formats for toll data. This class can process both excel and csv files, but xlsm or xls files. When the files are imported several private methods process the data fields and allow the files to be exported as `DataFrames` or as a `csv` file.
+Transaction files are one of the most common data formats for toll data. This class can process both excel and csv files, and works for both xlsm or xls files. The processed files can be exported as `DataFrames` or a `csv` file.
 
 # Trip Files
-This class inherits the methods and functionality from the `TransactionFile` class, but uses different dictionarys and naming conventions since the data fields are named different between the two files. 
+Trip files are similar to transaction files, but there are a few differences. For single-point toll facilities there is the addition of an assigned fare, but little else is changed. For multi-point facilities
+information will be grouped by trips, so the transactions that make up a trip will be grouped together. Multi-point toll facility trip files will also contain information about the entry/exit point, the assigned rate, and final trip level OCR value assigned. 
 
-# Rate Assign 520
-This class allows the creation of a rate file object that computes and stores the rate for a particular transaction given the following values:
+This class inherits the methods and functionality from the `TransactionFile` class, but uses a different dictionary for some processing values since the naming conventions between the two files are dissimilar. 
+
+
+# Rate Assignment
+Rate assignment is relatively straightforward for time-of-day facilities. If you know some basic parameters it is possible to calculate the rate that should be assigned. The relevant parameters are as follows:
 - Datetime
 - Transaction type
 - Axles
-- Status
+- Transponder/Tag Status
 - Pay-by-Mail status
 - Holidays 
 
-Both the `base rate` and `final rate` can be queried. 
+The rate assignment classes allow you to determine both a `base rate` and `final rate`. The `base rate` is the rate without adjustment for time-of-day or pay-by-mail for vehicles that do not have a valid/active transponder. 
+## Rate Assign 520
+This class allows you to determine the rate for transactions occuring on the SR 520 bridge. 
 
-The rates contained in the `rate_dict` start with 2 axles for `rate1`, 3 axles for `rate2`, and so on.
-
-# Rate Assign 99
+## Rate Assign 99
 This class inherits from the 520 class but uses the rate table information for the SR 99 facility. Since these two roadways operate nearly identically there are no other changes between these classes.
 
-Class updated for rates effective October 1, 2021.
+The rates are updated to be the latest rates, effective October 1, 2021.
+
+## Rate Assign 99 Legacy
+This class inherits from the 520 class and uses the rate information prior to October 1, 2021. This class should only be used to validate rates prior to this effective date. 
 
 # Plate Combinatorics
 This class provides a simple way of determining a set of possible OCR mistakes from common errors. For example, the value of `B` is often mistaken for the numerical value of `8`. A plate with a value of `88` would return the combinations of `BB`, `B8`, `8B`, and `88`. This process is executed for arbitrarily complex plates, using a lookup table of common errors. 
@@ -33,14 +47,14 @@ This class tests whether a plate is read without a tag. The read threshold, whic
 - PLATE, for the plate value without state identifier
 - TRX_ID, for the transaction identification number
 
-The output `DataFrame` includes the new fields `AVI_MISMATCH` set to `True` or `False`, and if the value of `AVI_MISMATCH` is `True`, the field `MISSED_TAG_ID` for the ID of the missed tag.
+The output `DataFrame` includes the new fields `AVI_MISMATCH` set to `True` or `False` based on the result of the test, and the field `MISSED_TAG_ID` for the ID of the missed tag, if applicable.
 
-A `csv` file can be used to as a lookup `dictionary`, or it can be generated automatically. The API also allows users to state whether they want to use a static dictionary that is not updated based, or one that is updated with the data processed.
+A `csv` file can be used to as a lookup `dictionary`, or it can be generated automatically. The API also allows users to state whether they want to use a static dictionary that is not updated as the test progress, or one that continuously updated. 
 
 # AVI Test
-This class performs an AVI validation test, which is similar to the `AVI Validation`, but made to be more extensible and repeatable since repeated tests are required for a statistically significant sample. A minimum of 30 days of data is required, but more is recommended. This recommendation is based on a test duration of at least two weeks and previous experience. 
+This class performs an AVI validation test, which is similar to the `AVI Validation`, but made to be more extensible and easier to repeat tests. A minimum of 30 days of data is required, without modifying the source. This is based on previous experience, and that a large statistical sample is required for validation. 
 
-The test takes some time to execute since it works by importing the data and creating a single `DataFrame` object, and exporting it to a `pkl` file. If a previous `pkl` file exists this process is skipped. 
+The test takes some time to execute since it imports a large number of files to create a single `DataFrame` object. The results of the first run are exported ot a `.pkl` file. If an existing `.pkl` file exists this step can be skipped, and the runtime is reduced. 
 
 The process works as follows: 
 1. Import files for analysis, or using existing data
@@ -50,5 +64,5 @@ The process works as follows:
 
 This analysis can be repeated a desired number of times and the `get_test_result` method can be used to aggregate this information.
 
-# Testing Script
-To test this module run `python -m pytest` which will execute the `test_tollData` script. The script is not an exhaustive set of tests, but it should be sufficient to validate any major errors. 
+# Testing 
+To test this module run `python -m pytest` which will execute the `test_TollData` script. The script is not an exhaustive set of tests, but it should be sufficient to validate major errors. 

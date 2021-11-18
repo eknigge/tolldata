@@ -283,7 +283,7 @@ class AVIValidation:
         Method to find and mark missed avi reads. Exporting the
         tag dictionary is an optional parameter.
         """
-        #reset DataFrame index for marking missed reads
+        # reset DataFrame index for marking missed reads
         self._df = self._df.reset_index()
         self.__find_missed_avi_reads()
         self.__mark_missed_avi_reads()
@@ -1014,6 +1014,112 @@ class AVITest:
         self.__set_start_date()
         self.__build_tag_dictionary()
         self.__execute_avi_test()
+
+
+class RateAssign99Legacy(RateAssign520):
+    rate1 = {0: 1.00, 1: 1.00, 2: 1.00, 3: 1.00, 4: 1.00, 5: 1.00,
+             6: 1.25, 7: 1.50, 8: 1.50, 9: 1.25, 10: 1.25, 11: 1.25,
+             12: 1.25, 13: 1.25, 14: 1.25, 15: 2.25, 16: 2.25, 17: 2.25,
+             18: 1.25, 19: 1.25, 20: 1.25, 21: 1.25, 22: 1.25, 23: 1.00
+             }
+
+    rate2 = {0: 1.50, 1: 1.50, 2: 1.50, 3: 1.50, 4: 1.50, 5: 1.50,
+             6: 1.90, 7: 2.25, 8: 2.25, 9: 1.90, 10: 1.90, 11: 1.90,
+             12: 1.90, 13: 1.90, 14: 1.90, 15: 3.40, 16: 3.40, 17: 3.40,
+             18: 1.90, 19: 1.90, 20: 1.90, 21: 1.90, 22: 1.90, 23: 1.50
+             }
+
+    rate3 = {0: 2.00, 1: 2.00, 2: 2.00, 3: 2.00, 4: 2.00, 5: 2.00,
+             6: 2.50, 7: 3.00, 8: 3.00, 9: 2.50, 10: 2.50, 11: 2.50,
+             12: 2.50, 13: 2.50, 14: 2.50, 15: 4.50, 16: 4.50, 17: 4.50,
+             18: 2.50, 19: 2.50, 20: 2.50, 21: 2.50, 22: 2.50, 23: 2.00
+             }
+
+    rate4 = {0: 2.50, 1: 2.50, 2: 2.50, 3: 2.50, 4: 2.50, 5: 2.50,
+             6: 3.15, 7: 3.75, 8: 3.75, 9: 3.15, 10: 3.15, 11: 3.15,
+             12: 3.15, 13: 3.15, 14: 3.15, 15: 5.65, 16: 5.65, 17: 5.65,
+             18: 3.15, 19: 3.15, 20: 3.15, 21: 3.15, 22: 3.15, 23: 2.50
+             }
+
+    rate5 = {0: 3.00, 1: 3.00, 2: 3.00, 3: 3.00, 4: 3.00, 5: 3.00,
+             6: 3.75, 7: 4.50, 8: 4.50, 9: 3.75, 10: 3.75, 11: 3.75,
+             12: 3.75, 13: 3.75, 14: 3.75, 15: 6.75, 16: 6.75, 17: 6.75,
+             18: 3.75, 19: 3.75, 20: 3.75, 21: 3.75, 22: 3.75, 23: 3.00
+             }
+
+    rate1_wknd = {0: 1.00, 1: 1.00, 2: 1.00, 3: 1.00, 4: 1.00,
+                  5: 1.00, 6: 1.00, 7: 1.00, 8: 1.00, 9: 1.00, 10: 1.00,
+                  11: 1.00, 12: 1.00, 13: 1.00, 14: 1.00, 15: 1.00,
+                  16: 1.00, 17: 1.00, 18: 1.00, 19: 1.00, 20: 1.00,
+                  21: 1.00, 22: 1.00, 23: 1.00
+                  }
+
+    rate2_wknd = {0: 1.50, 1: 1.50, 2: 1.50, 3: 1.50, 4: 1.50,
+                  5: 1.50, 6: 1.50, 7: 1.50, 8: 1.50, 9: 1.50, 10: 1.50,
+                  11: 1.50, 12: 1.50, 13: 1.50, 14: 1.50, 15: 1.50,
+                  16: 1.50, 17: 1.50, 18: 1.50, 19: 1.50, 20: 1.50,
+                  21: 1.50, 22: 1.50, 23: 1.50
+                  }
+
+    rate3_wknd = {0: 2.00, 1: 2.00, 2: 2.00, 3: 2.00, 4: 2.00,
+                  5: 2.00, 6: 2.00, 7: 2.00, 8: 2.00, 9: 2.00, 10: 2.00,
+                  11: 2.00, 12: 2.00, 13: 2.00, 14: 2.00, 15: 2.00,
+                  16: 2.00, 17: 2.00, 18: 2.00, 19: 2.00, 20: 2.00,
+                  21: 2.00, 22: 2.00, 23: 2.00
+                  }
+
+    rate4_wknd = {0: 2.50, 1: 2.50, 2: 2.50, 3: 2.50, 4: 2.50,
+                  5: 2.50, 6: 2.50, 7: 2.50, 8: 2.50, 9: 2.50, 10: 2.50,
+                  11: 2.50, 12: 2.50, 13: 2.50, 14: 2.50, 15: 2.50,
+                  16: 2.50, 17: 2.50, 18: 2.50, 19: 2.50, 20: 2.50,
+                  21: 2.50, 22: 2.50, 23: 2.50
+                  }
+
+    rate5_wknd = {0: 3.00, 1: 3.00, 2: 3.00, 3: 3.00, 4: 3.00,
+                  5: 3.00, 6: 3.00, 7: 3.00, 8: 3.00, 9: 3.00, 10: 3.00,
+                  11: 3.00, 12: 3.00, 13: 3.00, 14: 3.00, 15: 3.00,
+                  16: 3.00, 17: 3.00, 18: 3.00, 19: 3.00, 20: 3.00,
+                  21: 3.00, 22: 3.00, 23: 3.00
+                  }
+
+    rate_dict = {2: rate1, 3: rate2, 4: rate3, 5: rate4, 6: rate5}
+    rate_dict_wknd = {2: rate1_wknd, 3: rate2_wknd, 4: rate3_wknd, 5: rate4_wknd, 6: rate5_wknd}
+
+    def __set_rate_table(self, datetime_value: datetime):
+        """
+        :return: dict, rate dictionary
+        """
+        if datetime_value.date() in self.holidays:
+            return self.rate_dict_wknd
+        elif datetime_value.weekday() > 4:
+            return self.rate_dict_wknd
+        else:
+            return self.rate_dict
+
+    def __set_rate_table(self, datetime_value: datetime):
+        """
+        :return: dict, rate dictionary
+        """
+        if datetime_value.date() in self.holidays:
+            return self.rate_dict_wknd
+        elif datetime_value.weekday() > 4:
+            return self.rate_dict_wknd
+        else:
+            return self.rate_dict
+
+    def __init__(self, datetime_value: datetime, trx_type: str,
+                 axles: int, status: str, pbm: bool = False,
+                 holidays: list = None):
+        """
+        :param datetime_value: datetime.datetime
+        :param trx_type: str, transaction type
+        :param axles: int, axle count
+        :param status: str, status
+        self.assertEqual(hour, 9)
+        :param pbm: bool, pay-by-mail status
+        :param holidays: list datetime.datetime, list of holiday dates
+        """
+        super().__init__(datetime_value, trx_type, axles, status, pbm, holidays)
 
 
 if __name__ == '__main__':

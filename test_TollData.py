@@ -112,6 +112,7 @@ class TestAVIValidation(TestCase):
         df_errors = df_errors[df_errors['AVI_MISMATCH'] == True]
         self.assertEqual(df_errors.empty, True)
 
+
 class TestRateAssign99(TestCase):
     _holiday_list = [datetime.date(2020, 7, 3),
                      datetime.date(2020, 9, 7),
@@ -131,7 +132,7 @@ class TestRateAssign99(TestCase):
         axles = 2
         status = 'V'
         rate = ra.RateAssign99(time, trx_type, axles, status,
-                                holidays=self._holiday_list).get_final_rate()
+                               holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 1.15)
 
     def test_morning_image_3axle(self):
@@ -140,7 +141,7 @@ class TestRateAssign99(TestCase):
         axles = 3
         status = ''
         rate = ra.RateAssign99(time, trx_type, axles, status,
-                                holidays=self._holiday_list).get_final_rate()
+                               holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 5.2)
 
     def test_morning_image_6axle(self):
@@ -152,12 +153,61 @@ class TestRateAssign99(TestCase):
                                holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 10.35)
 
-
     def test_evening_holiday_avi_lost_4axle(self):
         time = datetime.datetime(2020, 1, 1, hour=19, minute=15, second=8)
         trx_type = 'AVI'
         axles = 4
         status = 'L'
         rate = ra.RateAssign99(time, trx_type, axles, status,
-                                holidays=self._holiday_list).get_final_rate()
+                               holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 6.3)
+
+
+class TestRateAssign99Legacy(TestCase):
+    _holiday_list = [datetime.date(2020, 7, 3),
+                     datetime.date(2020, 9, 7),
+                     datetime.date(2020, 1, 1)]
+
+    def test_morning_valid_avi_2axle(self):
+        time = datetime.datetime(2020, 1, 1, hour=9, minute=0, second=30)
+        trx_type = 'AVI'
+        axles = 2
+        status = 'V'
+        rate = ra.RateAssign99Legacy(time, trx_type, axles, status).get_final_rate()
+        self.assertEqual(rate, 1.25)
+
+    def test_morning_holiday_valid_avi_2axle(self):
+        time = datetime.datetime(2020, 7, 3, hour=9, minute=15, second=8)
+        trx_type = 'AVI'
+        axles = 2
+        status = 'V'
+        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
+                               holidays=self._holiday_list).get_final_rate()
+        self.assertEqual(rate, 1.00)
+
+    def test_morning_image_3axle(self):
+        time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
+        trx_type = 'IMG'
+        axles = 3
+        status = ''
+        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
+                               holidays=self._holiday_list).get_final_rate()
+        self.assertEqual(rate, 4.9)
+
+    def test_morning_image_6axle(self):
+        time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
+        trx_type = 'IMG'
+        axles = 6
+        status = ''
+        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
+                               holidays=self._holiday_list).get_final_rate()
+        self.assertEqual(rate, 9.75)
+
+    def test_evening_holiday_avi_lost_4axle(self):
+        time = datetime.datetime(2020, 1, 1, hour=19, minute=15, second=8)
+        trx_type = 'AVI'
+        axles = 4
+        status = 'L'
+        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
+                               holidays=self._holiday_list).get_final_rate()
+        self.assertEqual(rate, 6.0)
