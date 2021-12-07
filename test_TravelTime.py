@@ -1,5 +1,5 @@
 from unittest import TestCase
-import TravelTime as tt
+import TravelTime405 as tt
 
 
 class TestUtil(TestCase):

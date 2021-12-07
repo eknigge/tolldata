@@ -5,28 +5,94 @@ from tqdm import tqdm
 import datetime
 
 
-class TravelTime:
-    df = None
+class TravelTime405:
+    df_travel_time = None
+    FREE_FLOW_SPEED = 3600 / 65  # miles / second
+    data_date = None
     fields = {'datetime_field': 'DATETIME', 'plaza_field': 'Plaza', 'trip_field': 'Trip ID'}
+    toll_location_feet = \
+        {"NB01": 389809, "NB02": 389809, "NB03": 405301, "NB04": 421240, "NB05": 425175,
+         "NB06": 426828, "NB07": 433800, "NB08": 453800, "NB09": 465100, "NB10": 471090,
+         "SB01": 468200, "SB02": 459870, "SB03": 451800, "SB04": 433770, "SB05": 428820,
+         "SB06": 426798, "SB07": 425145, "SB08": 410272, "SB09": 399420, "SB10": 389779,
+         "SB11": 389779
+         }
 
     def __init__(self, df: pd.DataFrame, datetime_field=None, plaza_field=None,
                  trip_field=None):
-        self.df = df
         if datetime_field is not None:
             self.set_field('datetime_field', datetime_field)
         if plaza_field is not None:
             self.set_field('plaza_field', plaza_field)
         if trip_field is not None:
             self.set_field('trip_field', trip_field)
-        pairs = self.calculate_travel_pairs()
+        pairs = self.calculate_travel_pairs(df)
         avg_pairs = self.average_travel_times(pairs)
-        temp_df = self.create_summary_dataframe(avg_pairs)
-        temp_df.to_csv('temp.csv')
+        df_travel_time = self.create_summary_dataframe(avg_pairs)
+        self.df_travel_time = self.interpolate_missing_travel_times(df_travel_time)
+
+    def get_travel_time(self, start_time: datetime.time, trip_definition: list):
+        start_time = datetime.datetime(self.data_date.year, self.data_date.month,
+                                       self.data_date.day, hour=start_time.hour,
+                                       minute=start_time.minute, second=start_time.second,
+                                       microsecond=start_time.microsecond)
+        start_time_min = datetime.datetime(self.data_date.year, self.data_date.month,
+                                           self.data_date.day, hour=start_time.hour,
+                                           minute=start_time.minute)
+        total_time = 0.0
+        prev_node = trip_definition[0]
+        n = len(trip_definition)
+
+        for i in range(1, n):
+            node = trip_definition[i]
+            pair = prev_node + '-' + node
+            pair_series = self.df_travel_time[pair]
+            pair_travel_time = pair_series.get(start_time_min)
+            total_time += pair_travel_time
+
+            # Reset counters
+            prev_node = node
+            start_time = datetime.timedelta(seconds=pair_travel_time) + start_time
+            start_time_min = datetime.datetime(self.data_date.year, self.data_date.month,
+                                               self.data_date.day, hour=start_time.hour,
+                                               minute=start_time.minute, second=start_time.second)
+            start_time_min = TravelTimeUtil.round_minutes(TravelTimeUtil.round_seconds(start_time_min))
+        return total_time
+
+
+    def interpolate_missing_travel_times(self, input_df: pd.DataFrame) -> pd.DataFrame:
+        columns = input_df.columns
+        for column in columns:
+            series = input_df[column]
+            input_df[column] = self.add_travel_time_boundary_conditions(series)
+        return input_df
+
+    def compute_pair_distance_miles(self, value: str) -> float:
+        start = value.split('-')[0]
+        end = value.split('-')[1]
+        return abs((self.toll_location_feet[end] - self.toll_location_feet[start]) / 5820)
+
+    def add_travel_time_boundary_conditions(self, input_series: pd.Series) -> pd.Series:
+        pair = input_series.name
+        pair_distance = self.compute_pair_distance_miles(pair)
+
+        # Update first and last elements with free flow condition
+        free_flow_travel_time = datetime.timedelta(seconds=pair_distance * self.FREE_FLOW_SPEED)
+        input_series.iloc[0] = free_flow_travel_time
+        last_element = input_series.shape[0] - 1
+        input_series.iloc[last_element] = free_flow_travel_time
+
+        # Interpolate missing values
+        input_series = input_series.dt.seconds
+        input_series = input_series.interpolate()
+
+        return input_series
 
     def create_summary_dataframe(self, avg_pairs: dict) -> pd.DataFrame:
         series_list = []
         first_pair = list(avg_pairs.keys())[0]
         data_date = list(avg_pairs[first_pair].keys())[0]
+        self.data_date = data_date
         start_time = datetime.datetime(data_date.year, data_date.month, data_date.day)
         end_time = datetime.datetime(data_date.year, data_date.month, data_date.day,
                                      hour=23, minute=59)
@@ -38,7 +104,6 @@ class TravelTime:
             new_series = pd.Series(avg_pairs[pair])
             df_out[pair] = new_series
         return df_out
-
 
     @staticmethod
     def check_single_date(datetime_value_list: list):
@@ -67,14 +132,13 @@ class TravelTime:
             raise ValueError(field_value + 'for field ' + field + ' not found in DataFrame')
         self.fields[field] = field_value
 
-    def calculate_travel_pairs(self) -> dict:
-        df_temp = self.df
-        unique_trips = df_temp[self.fields['trip_field']].drop_duplicates()
+    def calculate_travel_pairs(self, input_df: pd.DataFrame) -> dict:
+        unique_trips = input_df[self.fields['trip_field']].drop_duplicates()
         plaza_field = self.fields['plaza_field']
         datetime_field = self.fields['datetime_field']
         output = {}
         for trip in tqdm(unique_trips):
-            df_trip = df_temp[df_temp[self.fields['trip_field']] == trip]
+            df_trip = input_df[input_df[self.fields['trip_field']] == trip]
             df_trip = df_trip.sort_values(by=self.fields['datetime_field'])
 
             df_trip = df_trip.reset_index()
@@ -128,8 +192,20 @@ class TravelTimeUtil:
 
 
 if __name__ == '__main__':
-    test_file = '_hashed_export_test_data_trip.csv'
+    # test_file = '_hashed_export_test_data_trip.csv'
+    test_file = 'full_file_test.csv'
     df = pd.read_csv(test_file)
     datetime_format = '%m/%d/%Y %H.%M.%S.%f'
     df['DATETIME'] = pd.to_datetime(df['Trans Time'], format=datetime_format)
-    TravelTime(df)
+    sample_travel_time = TravelTime405(df)
+    trip_def = ['SB01', 'SB02', 'SB03', 'SB04', 'SB08', 'SB09', 'SB10']
+    travel_time_list = []
+
+    start_time = datetime.datetime(2021, 1, 1, hour=6, minute=10)
+    start_time_list = []
+
+    for i in range(25):
+        travel_time = sample_travel_time.get_travel_time(start_time, trip_def)
+        travel_time_list.append(travel_time)
+        start_time = start_time + datetime.timedelta(minutes=5)
+    print(travel_time_list)
