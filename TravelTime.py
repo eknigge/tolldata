@@ -2,21 +2,22 @@ import pandas as pd
 import logging
 from tqdm import tqdm
 import datetime
+import numpy as np
 
 
 class TravelTime:
     df_travel_time = None
-    FREE_FLOW_SPEED = 3600 / 65  # miles / second
+    FREE_FLOW_SPEED = 3600 / 65 / 5280  # seconds / foot
     MINUTES_IN_DAY = 60 * 24 - 1
-    data_date = None
-    default_log_level = logging.INFO
-    default_field_names = {'datetime_field': 'DATETIME', 'plaza_field': 'Plaza', 'trip_field': 'Trip ID'}
-    toll_locations_in_feet = {
-        "NB01": 389809, "NB02": 389809, "NB03": 405301, "NB04": 421240, "NB05": 425175,
-        "NB06": 426828, "NB07": 433800, "NB08": 453800, "NB09": 465100, "NB10": 471090
-        , "SB01": 468200, "SB02": 459870, "SB03": 451800, "SB04": 433770, "SB05": 428820,
-        "SB06": 426798, "SB07": 425145, "SB08": 410272, "SB09": 399420, "SB10": 389779,
-        "SB11": 389779
+    _data_date = None
+    _default_log_level = logging.INFO
+    _default_field_names = {'datetime_field': 'DATETIME', 'plaza_field': 'Plaza', 'trip_field': 'Trip ID'}
+    _toll_locations_in_feet = {
+        'NB01': 389809, 'NB02': 389809, 'NB03': 405301, 'NB04': 421240, 'NB05': 425175,
+        'NB06': 426828, 'NB07': 433800, 'NB08': 453800, 'NB09': 465100, 'NB10': 471090
+        , 'SB01': 468200, 'SB02': 459870, 'SB03': 451800, 'SB04': 433770, 'SB05': 428820,
+        'SB06': 426798, 'SB07': 425145, 'SB08': 410272, 'SB09': 399420, 'SB10': 389779,
+        'SB11': 389779
     }
 
     def __init__(self, df: pd.DataFrame, datetime_field_name=None,
@@ -37,8 +38,9 @@ class TravelTime:
 
         # Set constructor args
         constructor_fields = {'datetime_field': datetime_field_name, 'plaza_field': plaza_field_name,
-                              'trip_field': trip_field_name, 'toll_locations_in_feet': toll_locations}
+                              'trip_field': trip_field_name}
         self._set_field_names(constructor_fields)
+        self._set_toll_locations(toll_locations)
 
         # Build trips
         pairs = self._calculate_travel_pairs(df)
@@ -46,17 +48,22 @@ class TravelTime:
         df_travel_time = self._create_summary_dataframe_skeleton(avg_pairs)
         self.df_travel_time = self._interpolate_missing_travel_times(df_travel_time)
 
-    def _initialize_logging(self, value: bool, log_level: int):
+    @staticmethod
+    def _initialize_logging(value: bool, log_level: int):
         if value:
             logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                                 datefmt='%m/%d/%Y %H:%M:%S', filename='output.log',
                                 level=log_level)
 
+    def _set_toll_locations(self, toll_locations: dict):
+        if toll_locations is not None:
+            self._toll_locations_in_feet = toll_locations
+
     def _set_field_names(self, field_value_dict: dict):
         logging.debug('Set constructor Field Names: ' + str(field_value_dict))
         for field_name in field_value_dict:
             if field_value_dict[field_name] is not None:
-                self.default_field_names[field_name] = field_value_dict[field_name]
+                self._default_field_names[field_name] = field_value_dict[field_name]
 
     def _add_datetime_within_day(self, datetime_value: datetime.datetime,
                                  timedelta_value: datetime.timedelta) -> datetime.datetime:
@@ -67,8 +74,8 @@ class TravelTime:
         :return: datetime.datetime
         """
         result = datetime_value + timedelta_value
-        data_date_last_minute_in_day = datetime.datetime(self.data_date.year, self.data_date.month,
-                                                         self.data_date.day, hour=23, minute=59)
+        data_date_last_minute_in_day = datetime.datetime(self._data_date.year, self._data_date.month,
+                                                         self._data_date.day, hour=23, minute=59)
         if result > data_date_last_minute_in_day:
             return data_date_last_minute_in_day
         else:
@@ -99,12 +106,12 @@ class TravelTime:
         """
         logging.debug('Get travel time. Start time ' + str(start_time) +
                       '. Trip Def: ' + str(trip_definition))
-        start_time = datetime.datetime(self.data_date.year, self.data_date.month,
-                                       self.data_date.day, hour=start_time.hour,
+        start_time = datetime.datetime(self._data_date.year, self._data_date.month,
+                                       self._data_date.day, hour=start_time.hour,
                                        minute=start_time.minute, second=start_time.second,
                                        microsecond=start_time.microsecond)
-        start_time_min = datetime.datetime(self.data_date.year, self.data_date.month,
-                                           self.data_date.day, hour=start_time.hour,
+        start_time_min = datetime.datetime(self._data_date.year, self._data_date.month,
+                                           self._data_date.day, hour=start_time.hour,
                                            minute=start_time.minute)
         total_time = 0.0
         prev_node = trip_definition[0]
@@ -132,15 +139,15 @@ class TravelTime:
         for column in columns:
             logging.debug('Interpolate times for pair: ' + str(columns))
             series = input_df[column]
-            input_df[column] = self._add_travel_time_boundary_conditions(series)
+            input_df[column] = self._add_boundary_and_interpolate(series)
         return input_df
 
-    def _compute_pair_distance_miles(self, value: str) -> float:
+    def _compute_pair_distance_feet(self, value: str) -> float:
         start = value.split('-')[0]
         end = value.split('-')[1]
-        return abs((self.toll_locations_in_feet[end] - self.toll_locations_in_feet[start]) / 5820)
+        return abs((self._toll_locations_in_feet[end] - self._toll_locations_in_feet[start]))
 
-    def _add_travel_time_boundary_conditions(self, input_series: pd.Series) -> pd.Series:
+    def _add_boundary_and_interpolate(self, input_series: pd.Series) -> pd.Series:
         """
         Add start and end elements to data series. This is necessary since some trips
         do not occur late at night, and can safely be assumed to have free flow
@@ -148,7 +155,7 @@ class TravelTime:
         :return: Pandas Series
         """
         pair = input_series.name
-        pair_distance = self._compute_pair_distance_miles(pair)
+        pair_distance = self._compute_pair_distance_feet(pair)
         logging.debug('Pair distance (mi): ' + str(pair_distance))
 
         # Update first and last elements with free flow condition
@@ -159,10 +166,10 @@ class TravelTime:
         input_series.iloc[last_element] = free_flow_travel_time
 
         # Interpolate missing values
-        input_series = input_series.dt.seconds
-        input_series = input_series.interpolate()
+        output_series = input_series.dt.seconds + input_series.dt.microseconds / 1_000_000
+        output_series = output_series.interpolate()
 
-        return input_series
+        return output_series
 
     def _create_summary_dataframe_skeleton(self, avg_pairs: dict) -> pd.DataFrame:
         """
@@ -173,7 +180,7 @@ class TravelTime:
         logging.info('Start create summary skeleton')
         first_pair = list(avg_pairs.keys())[0]
         data_date = list(avg_pairs[first_pair].keys())[0]
-        self.data_date = data_date
+        self._data_date = data_date
         start_time = datetime.datetime(data_date.year, data_date.month, data_date.day)
         end_time = datetime.datetime(data_date.year, data_date.month, data_date.day,
                                      hour=23, minute=59)
@@ -205,7 +212,7 @@ class TravelTime:
         output = {}
         for pair in tqdm(input_dict):
             for time in input_dict[pair]:
-                avg_time = TravelTimeUtil.average_list(input_dict[pair][time])
+                avg_time = TravelTimeUtil.average_timedelta_list(input_dict[pair][time])
                 if pair not in output:
                     output.update({pair: {time: avg_time}})
                 elif pair in output:
@@ -214,14 +221,14 @@ class TravelTime:
 
     def _calculate_travel_pairs(self, input_df: pd.DataFrame) -> dict:
         logging.info('Start travel time pair calculation')
-        unique_trips = input_df[self.default_field_names['trip_field']].drop_duplicates()
-        plaza_field = self.default_field_names['plaza_field']
-        datetime_field = self.default_field_names['datetime_field']
+        unique_trips = input_df[self._default_field_names['trip_field']].drop_duplicates()
+        plaza_field = self._default_field_names['plaza_field']
+        datetime_field = self._default_field_names['datetime_field']
         output = {}
         for trip in tqdm(unique_trips):
             logging.debug('Decompose Trip: ' + str(trip))
-            df_trip = input_df[input_df[self.default_field_names['trip_field']] == trip]
-            df_trip = df_trip.sort_values(by=self.default_field_names['datetime_field'])
+            df_trip = input_df[input_df[self._default_field_names['trip_field']] == trip]
+            df_trip = df_trip.sort_values(by=self._default_field_names['datetime_field'])
 
             df_trip = df_trip.reset_index()
             n = df_trip.shape[0] - 1
@@ -271,7 +278,7 @@ class TravelTimeUtil:
             return value - value_microseconds
 
     @staticmethod
-    def average_list(values: list):
+    def average_timedelta_list(values: list):
         n = len(values)
         value_sum = datetime.timedelta(seconds=0)
         for value in values:
@@ -284,8 +291,6 @@ if __name__ == '__main__':
     df = pd.read_csv(test_file)
     datetime_format = '%m/%d/%Y %H.%M.%S.%f'
     df['DATETIME'] = pd.to_datetime(df['Trans Time'], format=datetime_format)
-    sample_travel_time = TravelTime(df, enable_logging=True)
+    sample_travel_time = TravelTime(df)
     trip_def = ['SB01', 'SB02', 'SB03', 'SB04', 'SB08', 'SB09', 'SB10']
-    travel_time_list = []
     travel_times = sample_travel_time.get_travel_time_all_day(trip_def)
-    print(travel_times)
