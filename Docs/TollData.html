@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module TollData</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>TollData</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cgrinder%5Cdesktop%5C_dev%5Ctolldata%5Ctolldata.py">c:\users\grinder\desktop\_dev\tolldata\tolldata.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
+<a href="datetime.html">datetime</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="openpyxl.html">openpyxl</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="pickle.html">pickle</a><br>
+<a href="random.html">random</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="TollData.html#AVITest">AVITest</a>
+</font></dt><dt><font face="helvetica, arial"><a href="TollData.html#AVIValidation">AVIValidation</a>
+</font></dt><dt><font face="helvetica, arial"><a href="TollData.html#PlateCombinatorics">PlateCombinatorics</a>
+</font></dt><dt><font face="helvetica, arial"><a href="TollData.html#RateAssign520">RateAssign520</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="TollData.html#RateAssign99">RateAssign99</a>
+</font></dt><dt><font face="helvetica, arial"><a href="TollData.html#RateAssign99Legacy">RateAssign99Legacy</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="TollData.html#TransactionFile">TransactionFile</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="TollData.html#TripFile">TripFile</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AVITest">class <strong>AVITest</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AVITest">AVITest</a>(dataframe:&nbsp;pandas.core.frame.DataFrame&nbsp;=&nbsp;None,&nbsp;test_days:&nbsp;numpy.timedelta64&nbsp;=&nbsp;None,&nbsp;n_plates:&nbsp;int&nbsp;=&nbsp;1000,&nbsp;export_dataframe_errors:&nbsp;bool&nbsp;=&nbsp;False)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;perform&nbsp;AVI&nbsp;testing.&nbsp;The&nbsp;default&nbsp;test&nbsp;is&nbsp;a&nbsp;minimum&nbsp;of&nbsp;30&nbsp;days,&nbsp;but&nbsp;can&nbsp;be&nbsp;set&nbsp;to&nbsp;be&nbsp;longer.<br>
+This&nbsp;was&nbsp;determined&nbsp;based&nbsp;on&nbsp;experience&nbsp;and&nbsp;practicality&nbsp;of&nbsp;completing&nbsp;and&nbsp;auditing&nbsp;irregularities<br>
+in&nbsp;the&nbsp;test&nbsp;results.<br>
+&nbsp;<br>
+Imports&nbsp;files&nbsp;from&nbsp;working&nbsp;directory&nbsp;and&nbsp;creates&nbsp;a&nbsp;pickle&nbsp;file.&nbsp;If&nbsp;a&nbsp;pickle&nbsp;file&nbsp;from&nbsp;a&nbsp;previous<br>
+run&nbsp;exists,&nbsp;then&nbsp;it&nbsp;is&nbsp;used.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AVITest-__init__"><strong>__init__</strong></a>(self, dataframe: pandas.core.frame.DataFrame = None, test_days: numpy.timedelta64 = None, n_plates: int = 1000, export_dataframe_errors: bool = False)</dt><dd><tt>AVI&nbsp;Test&nbsp;constructor<br>
+:param&nbsp;export_dataframe_errors:&nbsp;Export&nbsp;dataframe&nbsp;containing&nbsp;errors<br>
+:param&nbsp;dataframe:&nbsp;Pandas&nbsp;DataFrame<br>
+:param&nbsp;test_days:&nbsp;Test&nbsp;duration&nbsp;as&nbsp;numpy&nbsp;timedelta64&nbsp;obj<br>
+:param&nbsp;n_plates:&nbsp;number&nbsp;of&nbsp;plate/tag&nbsp;used&nbsp;for&nbsp;analysis.&nbsp;Setting&nbsp;to&nbsp;0&nbsp;uses<br>
+an&nbsp;unlimited&nbsp;size&nbsp;dictionary</tt></dd></dl>
+
+<dl><dt><a name="AVITest-get_test_result"><strong>get_test_result</strong></a>(self) -&gt; float</dt><dd><tt>Return&nbsp;AVI&nbsp;Test&nbsp;result<br>
+:return:&nbsp;float,&nbsp;result</tt></dd></dl>
+
+<dl><dt><a name="AVITest-run_analysis"><strong>run_analysis</strong></a>(self)</dt><dd><tt>Run&nbsp;AVI&nbsp;analysis:<br>
+1.&nbsp;Import&nbsp;files&nbsp;for&nbsp;analysis,&nbsp;or&nbsp;use&nbsp;existing&nbsp;pickle&nbsp;file<br>
+2.&nbsp;Select&nbsp;a&nbsp;random&nbsp;start&nbsp;date&nbsp;from&nbsp;the&nbsp;available&nbsp;start&nbsp;dates<br>
+3.&nbsp;Build&nbsp;plate/tag&nbsp;dictionary<br>
+4.&nbsp;Run&nbsp;the&nbsp;AVI&nbsp;test&nbsp;and&nbsp;compute&nbsp;the&nbsp;metrics</tt></dd></dl>
+
+<dl><dt><a name="AVITest-set_dataframe"><strong>set_dataframe</strong></a>(self, dataframe: pandas.core.frame.DataFrame)</dt><dd><tt>Set&nbsp;the&nbsp;dataframe&nbsp;for&nbsp;analysis<br>
+:param&nbsp;dataframe:&nbsp;Pandas&nbsp;DataFrame</tt></dd></dl>
+
+<dl><dt><a name="AVITest-set_export_error_dataframe"><strong>set_export_error_dataframe</strong></a>(self, value: bool)</dt><dd><tt>Whether&nbsp;to&nbsp;export&nbsp;dataframe&nbsp;to&nbsp;a&nbsp;csv&nbsp;file&nbsp;named<br>
+:param&nbsp;value:&nbsp;bool</tt></dd></dl>
+
+<dl><dt><a name="AVITest-set_plate_tag_count"><strong>set_plate_tag_count</strong></a>(self, value: int)</dt><dd><tt>Set&nbsp;the&nbsp;plate/tag&nbsp;dictionary&nbsp;size<br>
+:param&nbsp;value:&nbsp;int</tt></dd></dl>
+
+<dl><dt><a name="AVITest-set_test_duration"><strong>set_test_duration</strong></a>(self, value: numpy.timedelta64)</dt><dd><tt>Set&nbsp;test&nbsp;duration,&nbsp;must&nbsp;be&nbsp;at&nbsp;least&nbsp;30&nbsp;days<br>
+:param&nbsp;value:&nbsp;Numpy&nbsp;Timedelta64</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'_df_full': &lt;class 'pandas.core.frame.DataFrame'&gt;, '_error_count': &lt;class 'int'&gt;, '_export_data_to_pickle': &lt;class 'bool'&gt;, '_export_dataframe_filename': &lt;class 'str'&gt;, '_export_error_dataframe': &lt;class 'bool'&gt;, '_n_plates': &lt;class 'int'&gt;, '_plate_tag_dict': &lt;class 'dict'&gt;, '_start_date': &lt;class 'numpy.datetime64'&gt;, '_test_days': &lt;class 'numpy.datetime64'&gt;, '_test_result': &lt;class 'float'&gt;, ...}</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AVIValidation">class <strong>AVIValidation</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AVIValidation">AVIValidation</a>(plate_tag_dict_name=None,&nbsp;dataframe:&nbsp;pandas.core.frame.DataFrame&nbsp;=&nbsp;None,&nbsp;static_dict:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;read_threshold:&nbsp;int&nbsp;=&nbsp;5,&nbsp;exact_plates:&nbsp;bool&nbsp;=&nbsp;True,&nbsp;export_dict:&nbsp;bool&nbsp;=&nbsp;True)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;test&nbsp;whether&nbsp;plate&nbsp;is&nbsp;read&nbsp;without&nbsp;a&nbsp;tag.&nbsp;The&nbsp;read&nbsp;threshold<br>
+can&nbsp;be&nbsp;set&nbsp;to&nbsp;constrain&nbsp;which&nbsp;transactions&nbsp;are&nbsp;flagged.&nbsp;The&nbsp;input<br>
+dataframe&nbsp;is&nbsp;required&nbsp;to&nbsp;have&nbsp;the&nbsp;TAG_ID,&nbsp;PLATE,&nbsp;and&nbsp;TRX_ID&nbsp;fields.<br>
+The&nbsp;input&nbsp;dataframe&nbsp;is&nbsp;modified&nbsp;with&nbsp;new&nbsp;fields&nbsp;AVI_MISMATCH&nbsp;(True&nbsp;or&nbsp;False)<br>
+&nbsp;and&nbsp;MISSED_TAG_ID&nbsp;for&nbsp;the&nbsp;missed&nbsp;tag,&nbsp;when&nbsp;the&nbsp;find_and_mark_missed_avi_reads<br>
+&nbsp;method&nbsp;is&nbsp;executed.<br>
+&nbsp;<br>
+An&nbsp;csv&nbsp;file&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;create&nbsp;the&nbsp;lookup&nbsp;dictionary,&nbsp;or&nbsp;it&nbsp;can<br>
+be&nbsp;created&nbsp;automatically.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AVIValidation-__init__"><strong>__init__</strong></a>(self, plate_tag_dict_name=None, dataframe: pandas.core.frame.DataFrame = None, static_dict: bool = False, read_threshold: int = 5, exact_plates: bool = True, export_dict: bool = True)</dt><dd><tt>:param&nbsp;plate_tag_dict_name:&nbsp;file&nbsp;or&nbsp;filename&nbsp;for&nbsp;plate/tag&nbsp;dictionary.&nbsp;Can&nbsp;use&nbsp;a<br>
+pickle,&nbsp;csv,&nbsp;or&nbsp;Python&nbsp;dict<br>
+:param&nbsp;dataframe:&nbsp;dataframe&nbsp;for&nbsp;analysis<br>
+:param&nbsp;static_dict:&nbsp;bool.&nbsp;Default&nbsp;False.&nbsp;Use&nbsp;a<br>
+dynamic&nbsp;or&nbsp;static&nbsp;dictionary&nbsp;file&nbsp;for&nbsp;analysis<br>
+:param&nbsp;read_threshold:&nbsp;Default&nbsp;5.&nbsp;Constrains&nbsp;the&nbsp;number&nbsp;of<br>
+plate/tag&nbsp;reads&nbsp;required&nbsp;before&nbsp;an&nbsp;error&nbsp;is&nbsp;recorded.<br>
+:param&nbsp;exact_plates:&nbsp;Default&nbsp;True.&nbsp;Whether&nbsp;to&nbsp;build&nbsp;dictionary&nbsp;and&nbsp;run<br>
+search&nbsp;using&nbsp;exact&nbsp;plate&nbsp;values,&nbsp;or&nbsp;whether&nbsp;to&nbsp;use<br>
+combinatorics&nbsp;based&nbsp;on&nbsp;common&nbsp;OCR&nbsp;character&nbsp;errors.<br>
+:param&nbsp;export_dict:&nbsp;bool.&nbsp;Default&nbsp;True.&nbsp;Export&nbsp;dictionary&nbsp;to&nbsp;pkl<br>
+file</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-find_and_mark_missed_avi_reads"><strong>find_and_mark_missed_avi_reads</strong></a>(self)</dt><dd><tt>Method&nbsp;to&nbsp;find&nbsp;and&nbsp;mark&nbsp;missed&nbsp;avi&nbsp;reads.&nbsp;Exporting&nbsp;the<br>
+tag&nbsp;dictionary&nbsp;is&nbsp;an&nbsp;optional&nbsp;parameter.</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-get_dataframe"><strong>get_dataframe</strong></a>(self) -&gt; pandas.core.frame.DataFrame</dt><dd><tt>:return:&nbsp;pd.DataFrame</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-get_plate_tag_dict"><strong>get_plate_tag_dict</strong></a>(self) -&gt; dict</dt></dl>
+
+<dl><dt><a name="AVIValidation-get_read_threshold"><strong>get_read_threshold</strong></a>(self) -&gt; int</dt><dd><tt>:return:&nbsp;read&nbsp;threshold</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-plate_tag_dict_to_csv"><strong>plate_tag_dict_to_csv</strong></a>(self)</dt><dd><tt>Export&nbsp;tag&nbsp;dictionary&nbsp;as&nbsp;a&nbsp;csv&nbsp;file</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-set_csv_plate_tag"><strong>set_csv_plate_tag</strong></a>(self, filename: str)</dt><dd><tt>CSV&nbsp;file&nbsp;should&nbsp;have&nbsp;a&nbsp;header&nbsp;row&nbsp;and&nbsp;the&nbsp;follow&nbsp;the&nbsp;format:<br>
+PLATE,&nbsp;TAG,&nbsp;READS.&nbsp;The&nbsp;READS&nbsp;field&nbsp;record&nbsp;the&nbsp;number&nbsp;of&nbsp;times<br>
+the&nbsp;plate/tag&nbsp;combination&nbsp;was&nbsp;recorded.&nbsp;This&nbsp;value&nbsp;is&nbsp;used&nbsp;to<br>
+determine&nbsp;whether&nbsp;it&nbsp;meets&nbsp;the&nbsp;threshold&nbsp;for&nbsp;flagging&nbsp;an&nbsp;error.<br>
+:param&nbsp;filename:&nbsp;filename&nbsp;of&nbsp;csv</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-set_dataframe"><strong>set_dataframe</strong></a>(self, dataframe: pandas.core.frame.DataFrame)</dt><dd><tt>Set&nbsp;dataframe<br>
+:param&nbsp;dataframe:&nbsp;input&nbsp;dataframe</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-set_export_dict"><strong>set_export_dict</strong></a>(self, value: bool)</dt><dd><tt>Set&nbsp;whether&nbsp;dictionary&nbsp;is&nbsp;exported&nbsp;to&nbsp;a&nbsp;pickle&nbsp;file&nbsp;after<br>
+completing&nbsp;analysis.<br>
+:param&nbsp;value:&nbsp;bool&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-set_read_threshold"><strong>set_read_threshold</strong></a>(self, value: int)</dt><dd><tt>Set&nbsp;the&nbsp;read&nbsp;threshold&nbsp;for&nbsp;the&nbsp;number&nbsp;of&nbsp;times&nbsp;a&nbsp;plate/tag<br>
+has&nbsp;to&nbsp;be&nbsp;recorded&nbsp;before&nbsp;errors&nbsp;are&nbsp;recorded.&nbsp;Must&nbsp;be&nbsp;greater<br>
+than&nbsp;1.<br>
+:param&nbsp;value:</tt></dd></dl>
+
+<dl><dt><a name="AVIValidation-set_static_dict"><strong>set_static_dict</strong></a>(self, value: bool)</dt><dd><tt>Set&nbsp;to&nbsp;control&nbsp;whether&nbsp;dictionary&nbsp;is&nbsp;used&nbsp;when&nbsp;file(s)&nbsp;are&nbsp;processed.<br>
+:param&nbsp;value:&nbsp;bool</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'_df': &lt;class 'pandas.core.frame.DataFrame'&gt;, '_error_indices': &lt;class 'set'&gt;, '_exact_plates': &lt;class 'bool'&gt;, '_export_dict': &lt;class 'bool'&gt;, '_pickle_filename': &lt;class 'str'&gt;, '_plate_tag_dict': &lt;class 'dict'&gt;, '_plate_tag_filename': &lt;class 'str'&gt;, '_read_threshold': &lt;class 'int'&gt;, '_required_dataframe_fields': &lt;class 'tuple'&gt;, '_static_dict': &lt;class 'bool'&gt;}</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PlateCombinatorics">class <strong>PlateCombinatorics</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#PlateCombinatorics">PlateCombinatorics</a>(plate='')<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;handle&nbsp;plate&nbsp;combinatorics.&nbsp;Methods&nbsp;to&nbsp;return&nbsp;variations&nbsp;of&nbsp;plate&nbsp;values<br>
+based&nbsp;on&nbsp;common&nbsp;OCR&nbsp;errors.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="PlateCombinatorics-__init__"><strong>__init__</strong></a>(self, plate='')</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="PlateCombinatorics-get_plate"><strong>get_plate</strong></a>(self) -&gt; str</dt><dd><tt>:return:&nbsp;plate&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="PlateCombinatorics-get_plate_combinations"><strong>get_plate_combinations</strong></a>(self) -&gt; list</dt><dd><tt>:return:&nbsp;return&nbsp;list&nbsp;of&nbsp;plate&nbsp;combinations</tt></dd></dl>
+
+<dl><dt><a name="PlateCombinatorics-set_plate"><strong>set_plate</strong></a>(self, plate: str)</dt><dd><tt>Set&nbsp;plate&nbsp;value<br>
+:param&nbsp;plate:&nbsp;plate&nbsp;value</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'_ocr_dict': &lt;class 'dict'&gt;, '_plate': &lt;class 'str'&gt;, '_result_list': &lt;class 'list'&gt;}</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RateAssign520">class <strong>RateAssign520</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RateAssign520">RateAssign520</a>(datetime_value:&nbsp;&amp;lt;module&nbsp;'datetime'&nbsp;from&nbsp;'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&amp;gt;,&nbsp;trx_type:&nbsp;str,&nbsp;axles:&nbsp;int,&nbsp;status:&nbsp;str,&nbsp;pbm:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;holidays:&nbsp;list&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;assign&nbsp;rates&nbsp;to&nbsp;fixed&nbsp;time-of-day&nbsp;toll&nbsp;facilities.<br>
+&nbsp;<br>
+Rate&nbsp;tables&nbsp;used&nbsp;for&nbsp;rate&nbsp;assignment<br>
+rate1&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;2&nbsp;axle&nbsp;vehicle<br>
+rate2&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;3&nbsp;axle&nbsp;vehicle<br>
+rate3&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;4&nbsp;axle&nbsp;vehicle<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="RateAssign520-__init__"><strong>__init__</strong></a>(self, datetime_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;, trx_type: str, axles: int, status: str, pbm: bool = False, holidays: list = None)</dt><dd><tt>:param&nbsp;datetime_value:&nbsp;datetime&nbsp;value&nbsp;to&nbsp;assign&nbsp;rate<br>
+:param&nbsp;trx_type:&nbsp;str,&nbsp;transaction&nbsp;type<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;number&nbsp;of&nbsp;axles<br>
+:param&nbsp;status:&nbsp;str,&nbsp;status&nbsp;of&nbsp;transponder<br>
+:param&nbsp;pbm:&nbsp;bool,&nbsp;pay-by-mail<br>
+:param&nbsp;holidays:&nbsp;list,&nbsp;holidays</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-calculate_base_rate"><strong>calculate_base_rate</strong></a>(self, date_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;, axles: int)</dt><dd><tt>Calculate&nbsp;base&nbsp;rate&nbsp;using&nbsp;datetime&nbsp;and&nbsp;axle&nbsp;information<br>
+:param&nbsp;date_value:&nbsp;datetime<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;axle&nbsp;count</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-get_base_rate"><strong>get_base_rate</strong></a>(self)</dt><dd><tt>:return:&nbsp;float,&nbsp;base&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-get_final_rate"><strong>get_final_rate</strong></a>(self)</dt><dd><tt>:return:&nbsp;float,&nbsp;final&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-pbm_adjustment"><strong>pbm_adjustment</strong></a>(self, base_rate, axles)</dt><dd><tt>:param&nbsp;base_rate:&nbsp;float,&nbsp;base&nbsp;rate<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;number&nbsp;of&nbsp;axles</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-set_holidays"><strong>set_holidays</strong></a>(self, holidays)</dt><dd><tt>Set&nbsp;holidays&nbsp;as&nbsp;list&nbsp;of&nbsp;datetime&nbsp;values<br>
+:param&nbsp;holidays:&nbsp;list</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-tag_status_adjustment"><strong>tag_status_adjustment</strong></a>(self, status: str)</dt><dd><tt>If&nbsp;tag&nbsp;is&nbsp;not&nbsp;a&nbsp;valid&nbsp;status,&nbsp;set&nbsp;rate&nbsp;based&nbsp;on&nbsp;an<br>
+image&nbsp;transaction<br>
+:param&nbsp;status:&nbsp;str,&nbsp;status</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-test"><strong>test</strong></a>(self)</dt></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="RateAssign520-floor_hour"><strong>floor_hour</strong></a>(datetime_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;) -&gt; int</dt><dd><tt>:param&nbsp;datetime_value:&nbsp;datetime&nbsp;value<br>
+:return:&nbsp;int,&nbsp;value&nbsp;between&nbsp;0&nbsp;and&nbsp;23&nbsp;for&nbsp;floor&nbsp;of&nbsp;hour</tt></dd></dl>
+
+<dl><dt><a name="RateAssign520-set_axles"><strong>set_axles</strong></a>(axles)</dt><dd><tt>Constrains&nbsp;the&nbsp;number&nbsp;of&nbsp;axles&nbsp;based&nbsp;on&nbsp;rate&nbsp;assignment&nbsp;parameters.<br>
+If&nbsp;less&nbsp;than&nbsp;2&nbsp;set&nbsp;to&nbsp;2,&nbsp;if&nbsp;more&nbsp;than&nbsp;6&nbsp;set&nbsp;to&nbsp;6.<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;input&nbsp;number&nbsp;of&nbsp;axles<br>
+:return:&nbsp;int,&nbsp;axle&nbsp;count</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'base_rate': &lt;class 'float'&gt;, 'final_rate': &lt;class 'float'&gt;, 'holidays': &lt;class 'list'&gt;, 'non_valid_tag_status': &lt;class 'list'&gt;, 'pbm': &lt;class 'bool'&gt;, 'pbm_percent': &lt;class 'float'&gt;, 'pbm_status': &lt;class 'bool'&gt;, 'trx_type': &lt;class 'str'&gt;}</dl>
+
+<dl><dt><strong>base_rate</strong> = 0.0</dl>
+
+<dl><dt><strong>final_rate</strong> = 0.0</dl>
+
+<dl><dt><strong>holidays</strong> = []</dl>
+
+<dl><dt><strong>non_valid_tag_status</strong> = ['', 'I', 'L', 'S', 'U']</dl>
+
+<dl><dt><strong>pbm</strong> = False</dl>
+
+<dl><dt><strong>pbm_percent</strong> = 0.6</dl>
+
+<dl><dt><strong>pbm_status</strong> = False</dl>
+
+<dl><dt><strong>rate1</strong> = {0: 1.25, 1: 1.25, 2: 1.25, 3: 1.25, 4: 1.25, 5: 2.0, 6: 3.4, 7: 4.3, 8: 4.3, 9: 3.4, ...}</dl>
+
+<dl><dt><strong>rate1_wknd</strong> = {0: 1.25, 1: 1.25, 2: 1.25, 3: 1.25, 4: 1.25, 5: 1.4, 6: 1.4, 7: 1.4, 8: 2.05, 9: 2.05, ...}</dl>
+
+<dl><dt><strong>rate2</strong> = {0: 1.9, 1: 1.9, 2: 1.9, 3: 1.9, 4: 1.9, 5: 3.0, 6: 5.1, 7: 6.45, 8: 6.45, 9: 5.1, ...}</dl>
+
+<dl><dt><strong>rate2_wknd</strong> = {0: 1.9, 1: 1.9, 2: 1.9, 3: 1.9, 4: 1.9, 5: 2.1, 6: 2.1, 7: 2.1, 8: 3.1, 9: 3.1, ...}</dl>
+
+<dl><dt><strong>rate3</strong> = {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 4.0, 6: 6.8, 7: 8.6, 8: 8.6, 9: 6.8, ...}</dl>
+
+<dl><dt><strong>rate3_wknd</strong> = {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 2.8, 6: 2.8, 7: 2.8, 8: 4.1, 9: 4.1, ...}</dl>
+
+<dl><dt><strong>rate4</strong> = {0: 3.15, 1: 3.15, 2: 3.15, 3: 3.15, 4: 3.15, 5: 5, 6: 8.5, 7: 10.75, 8: 10.75, 9: 8.5, ...}</dl>
+
+<dl><dt><strong>rate4_wknd</strong> = {0: 3.15, 1: 3.15, 2: 3.15, 3: 3.15, 4: 3.15, 5: 3.5, 6: 3.5, 7: 3.5, 8: 5.15, 9: 5.15, ...}</dl>
+
+<dl><dt><strong>rate5</strong> = {0: 3.75, 1: 3.75, 2: 3.75, 3: 3.75, 4: 3.75, 5: 6, 6: 10.2, 7: 12.9, 8: 12.9, 9: 10.2, ...}</dl>
+
+<dl><dt><strong>rate5_wknd</strong> = {0: 3.75, 1: 3.75, 2: 3.75, 3: 3.75, 4: 3.75, 5: 4.2, 6: 4.2, 7: 4.2, 8: 6.15, 9: 6.15, ...}</dl>
+
+<dl><dt><strong>rate_dict</strong> = {2: {0: 1.25, 1: 1.25, 2: 1.25, 3: 1.25, 4: 1.25, 5: 2.0, 6: 3.4, 7: 4.3, 8: 4.3, 9: 3.4, ...}, 3: {0: 1.9, 1: 1.9, 2: 1.9, 3: 1.9, 4: 1.9, 5: 3.0, 6: 5.1, 7: 6.45, 8: 6.45, 9: 5.1, ...}, 4: {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 4.0, 6: 6.8, 7: 8.6, 8: 8.6, 9: 6.8, ...}, 5: {0: 3.15, 1: 3.15, 2: 3.15, 3: 3.15, 4: 3.15, 5: 5, 6: 8.5, 7: 10.75, 8: 10.75, 9: 8.5, ...}, 6: {0: 3.75, 1: 3.75, 2: 3.75, 3: 3.75, 4: 3.75, 5: 6, 6: 10.2, 7: 12.9, 8: 12.9, 9: 10.2, ...}}</dl>
+
+<dl><dt><strong>rate_dict_wknd</strong> = {2: {0: 1.25, 1: 1.25, 2: 1.25, 3: 1.25, 4: 1.25, 5: 1.4, 6: 1.4, 7: 1.4, 8: 2.05, 9: 2.05, ...}, 3: {0: 1.9, 1: 1.9, 2: 1.9, 3: 1.9, 4: 1.9, 5: 2.1, 6: 2.1, 7: 2.1, 8: 3.1, 9: 3.1, ...}, 4: {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 2.8, 6: 2.8, 7: 2.8, 8: 4.1, 9: 4.1, ...}, 5: {0: 3.15, 1: 3.15, 2: 3.15, 3: 3.15, 4: 3.15, 5: 3.5, 6: 3.5, 7: 3.5, 8: 5.15, 9: 5.15, ...}, 6: {0: 3.75, 1: 3.75, 2: 3.75, 3: 3.75, 4: 3.75, 5: 4.2, 6: 4.2, 7: 4.2, 8: 6.15, 9: 6.15, ...}}</dl>
+
+<dl><dt><strong>trx_type</strong> = ''</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RateAssign99">class <strong>RateAssign99</strong></a>(<a href="TollData.html#RateAssign520">RateAssign520</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RateAssign99">RateAssign99</a>(datetime_value:&nbsp;&amp;lt;module&nbsp;'datetime'&nbsp;from&nbsp;'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&amp;gt;,&nbsp;trx_type:&nbsp;str,&nbsp;axles:&nbsp;int,&nbsp;status:&nbsp;str,&nbsp;pbm:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;holidays:&nbsp;list&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;assign&nbsp;rates&nbsp;to&nbsp;fixed&nbsp;time-of-day&nbsp;toll&nbsp;facilities.<br>
+&nbsp;<br>
+Rate&nbsp;tables&nbsp;used&nbsp;for&nbsp;rate&nbsp;assignment<br>
+rate1&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;2&nbsp;axle&nbsp;vehicle<br>
+rate2&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;3&nbsp;axle&nbsp;vehicle<br>
+rate3&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;4&nbsp;axle&nbsp;vehicle<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="TollData.html#RateAssign99">RateAssign99</a></dd>
+<dd><a href="TollData.html#RateAssign520">RateAssign520</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="RateAssign99-__init__"><strong>__init__</strong></a>(self, datetime_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;, trx_type: str, axles: int, status: str, pbm: bool = False, holidays: list = None)</dt><dd><tt>:param&nbsp;datetime_value:&nbsp;datetime.datetime<br>
+:param&nbsp;trx_type:&nbsp;str,&nbsp;transaction&nbsp;type<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;axle&nbsp;count<br>
+:param&nbsp;status:&nbsp;str,&nbsp;status<br>
+self.assertEqual(hour,&nbsp;9)<br>
+:param&nbsp;pbm:&nbsp;bool,&nbsp;pay-by-mail&nbsp;status<br>
+:param&nbsp;holidays:&nbsp;list&nbsp;datetime.datetime,&nbsp;list&nbsp;of&nbsp;holiday&nbsp;dates</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>rate1</strong> = {0: 1.15, 1: 1.15, 2: 1.15, 3: 1.15, 4: 1.15, 5: 1.15, 6: 1.45, 7: 1.75, 8: 1.75, 9: 1.45, ...}</dl>
+
+<dl><dt><strong>rate1_wknd</strong> = {0: 1.15, 1: 1.15, 2: 1.15, 3: 1.15, 4: 1.15, 5: 1.15, 6: 1.15, 7: 1.15, 8: 1.15, 9: 1.15, ...}</dl>
+
+<dl><dt><strong>rate2</strong> = {0: 1.75, 1: 1.75, 2: 1.75, 3: 1.75, 4: 1.75, 5: 1.75, 6: 2.2, 7: 2.65, 8: 2.65, 9: 2.2, ...}</dl>
+
+<dl><dt><strong>rate2_wknd</strong> = {0: 1.75, 1: 1.75, 2: 1.75, 3: 1.75, 4: 1.75, 5: 1.75, 6: 1.75, 7: 1.75, 8: 1.75, 9: 1.75, ...}</dl>
+
+<dl><dt><strong>rate3</strong> = {0: 2.3, 1: 2.3, 2: 2.3, 3: 2.3, 4: 2.3, 5: 2.3, 6: 2.9, 7: 3.5, 8: 3.5, 9: 2.9, ...}</dl>
+
+<dl><dt><strong>rate3_wknd</strong> = {0: 2.3, 1: 2.3, 2: 2.3, 3: 2.3, 4: 2.3, 5: 2.3, 6: 2.3, 7: 2.3, 8: 2.3, 9: 2.3, ...}</dl>
+
+<dl><dt><strong>rate4</strong> = {0: 2.9, 1: 2.9, 2: 2.9, 3: 2.9, 4: 2.9, 5: 2.9, 6: 3.65, 7: 4.4, 8: 4.4, 9: 3.65, ...}</dl>
+
+<dl><dt><strong>rate4_wknd</strong> = {0: 2.9, 1: 2.9, 2: 2.9, 3: 2.9, 4: 2.9, 5: 2.9, 6: 2.9, 7: 2.9, 8: 2.9, 9: 2.9, ...}</dl>
+
+<dl><dt><strong>rate5</strong> = {0: 3.45, 1: 3.45, 2: 3.45, 3: 3.45, 4: 3.45, 5: 3.45, 6: 4.35, 7: 5.25, 8: 5.25, 9: 4.35, ...}</dl>
+
+<dl><dt><strong>rate5_wknd</strong> = {0: 3.45, 1: 3.45, 2: 3.45, 3: 3.45, 4: 3.45, 5: 3.45, 6: 3.45, 7: 3.45, 8: 3.45, 9: 3.45, ...}</dl>
+
+<dl><dt><strong>rate_dict</strong> = {2: {0: 1.15, 1: 1.15, 2: 1.15, 3: 1.15, 4: 1.15, 5: 1.15, 6: 1.45, 7: 1.75, 8: 1.75, 9: 1.45, ...}, 3: {0: 1.75, 1: 1.75, 2: 1.75, 3: 1.75, 4: 1.75, 5: 1.75, 6: 2.2, 7: 2.65, 8: 2.65, 9: 2.2, ...}, 4: {0: 2.3, 1: 2.3, 2: 2.3, 3: 2.3, 4: 2.3, 5: 2.3, 6: 2.9, 7: 3.5, 8: 3.5, 9: 2.9, ...}, 5: {0: 2.9, 1: 2.9, 2: 2.9, 3: 2.9, 4: 2.9, 5: 2.9, 6: 3.65, 7: 4.4, 8: 4.4, 9: 3.65, ...}, 6: {0: 3.45, 1: 3.45, 2: 3.45, 3: 3.45, 4: 3.45, 5: 3.45, 6: 4.35, 7: 5.25, 8: 5.25, 9: 4.35, ...}}</dl>
+
+<dl><dt><strong>rate_dict_wknd</strong> = {2: {0: 1.15, 1: 1.15, 2: 1.15, 3: 1.15, 4: 1.15, 5: 1.15, 6: 1.15, 7: 1.15, 8: 1.15, 9: 1.15, ...}, 3: {0: 1.75, 1: 1.75, 2: 1.75, 3: 1.75, 4: 1.75, 5: 1.75, 6: 1.75, 7: 1.75, 8: 1.75, 9: 1.75, ...}, 4: {0: 2.3, 1: 2.3, 2: 2.3, 3: 2.3, 4: 2.3, 5: 2.3, 6: 2.3, 7: 2.3, 8: 2.3, 9: 2.3, ...}, 5: {0: 2.9, 1: 2.9, 2: 2.9, 3: 2.9, 4: 2.9, 5: 2.9, 6: 2.9, 7: 2.9, 8: 2.9, 9: 2.9, ...}, 6: {0: 3.45, 1: 3.45, 2: 3.45, 3: 3.45, 4: 3.45, 5: 3.45, 6: 3.45, 7: 3.45, 8: 3.45, 9: 3.45, ...}}</dl>
+
+<hr>
+Methods inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><a name="RateAssign99-calculate_base_rate"><strong>calculate_base_rate</strong></a>(self, date_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;, axles: int)</dt><dd><tt>Calculate&nbsp;base&nbsp;rate&nbsp;using&nbsp;datetime&nbsp;and&nbsp;axle&nbsp;information<br>
+:param&nbsp;date_value:&nbsp;datetime<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;axle&nbsp;count</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-get_base_rate"><strong>get_base_rate</strong></a>(self)</dt><dd><tt>:return:&nbsp;float,&nbsp;base&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-get_final_rate"><strong>get_final_rate</strong></a>(self)</dt><dd><tt>:return:&nbsp;float,&nbsp;final&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-pbm_adjustment"><strong>pbm_adjustment</strong></a>(self, base_rate, axles)</dt><dd><tt>:param&nbsp;base_rate:&nbsp;float,&nbsp;base&nbsp;rate<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;number&nbsp;of&nbsp;axles</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-set_holidays"><strong>set_holidays</strong></a>(self, holidays)</dt><dd><tt>Set&nbsp;holidays&nbsp;as&nbsp;list&nbsp;of&nbsp;datetime&nbsp;values<br>
+:param&nbsp;holidays:&nbsp;list</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-tag_status_adjustment"><strong>tag_status_adjustment</strong></a>(self, status: str)</dt><dd><tt>If&nbsp;tag&nbsp;is&nbsp;not&nbsp;a&nbsp;valid&nbsp;status,&nbsp;set&nbsp;rate&nbsp;based&nbsp;on&nbsp;an<br>
+image&nbsp;transaction<br>
+:param&nbsp;status:&nbsp;str,&nbsp;status</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-test"><strong>test</strong></a>(self)</dt></dl>
+
+<hr>
+Static methods inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><a name="RateAssign99-floor_hour"><strong>floor_hour</strong></a>(datetime_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;) -&gt; int</dt><dd><tt>:param&nbsp;datetime_value:&nbsp;datetime&nbsp;value<br>
+:return:&nbsp;int,&nbsp;value&nbsp;between&nbsp;0&nbsp;and&nbsp;23&nbsp;for&nbsp;floor&nbsp;of&nbsp;hour</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99-set_axles"><strong>set_axles</strong></a>(axles)</dt><dd><tt>Constrains&nbsp;the&nbsp;number&nbsp;of&nbsp;axles&nbsp;based&nbsp;on&nbsp;rate&nbsp;assignment&nbsp;parameters.<br>
+If&nbsp;less&nbsp;than&nbsp;2&nbsp;set&nbsp;to&nbsp;2,&nbsp;if&nbsp;more&nbsp;than&nbsp;6&nbsp;set&nbsp;to&nbsp;6.<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;input&nbsp;number&nbsp;of&nbsp;axles<br>
+:return:&nbsp;int,&nbsp;axle&nbsp;count</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><strong>__annotations__</strong> = {'base_rate': &lt;class 'float'&gt;, 'final_rate': &lt;class 'float'&gt;, 'holidays': &lt;class 'list'&gt;, 'non_valid_tag_status': &lt;class 'list'&gt;, 'pbm': &lt;class 'bool'&gt;, 'pbm_percent': &lt;class 'float'&gt;, 'pbm_status': &lt;class 'bool'&gt;, 'trx_type': &lt;class 'str'&gt;}</dl>
+
+<dl><dt><strong>base_rate</strong> = 0.0</dl>
+
+<dl><dt><strong>final_rate</strong> = 0.0</dl>
+
+<dl><dt><strong>holidays</strong> = []</dl>
+
+<dl><dt><strong>non_valid_tag_status</strong> = ['', 'I', 'L', 'S', 'U']</dl>
+
+<dl><dt><strong>pbm</strong> = False</dl>
+
+<dl><dt><strong>pbm_percent</strong> = 0.6</dl>
+
+<dl><dt><strong>pbm_status</strong> = False</dl>
+
+<dl><dt><strong>trx_type</strong> = ''</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RateAssign99Legacy">class <strong>RateAssign99Legacy</strong></a>(<a href="TollData.html#RateAssign520">RateAssign520</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RateAssign99Legacy">RateAssign99Legacy</a>(datetime_value:&nbsp;&amp;lt;module&nbsp;'datetime'&nbsp;from&nbsp;'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&amp;gt;,&nbsp;trx_type:&nbsp;str,&nbsp;axles:&nbsp;int,&nbsp;status:&nbsp;str,&nbsp;pbm:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;holidays:&nbsp;list&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;assign&nbsp;rates&nbsp;to&nbsp;fixed&nbsp;time-of-day&nbsp;toll&nbsp;facilities.<br>
+&nbsp;<br>
+Rate&nbsp;tables&nbsp;used&nbsp;for&nbsp;rate&nbsp;assignment<br>
+rate1&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;2&nbsp;axle&nbsp;vehicle<br>
+rate2&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;3&nbsp;axle&nbsp;vehicle<br>
+rate3&nbsp;weekday&nbsp;rate&nbsp;for&nbsp;4&nbsp;axle&nbsp;vehicle<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="TollData.html#RateAssign99Legacy">RateAssign99Legacy</a></dd>
+<dd><a href="TollData.html#RateAssign520">RateAssign520</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="RateAssign99Legacy-__init__"><strong>__init__</strong></a>(self, datetime_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;, trx_type: str, axles: int, status: str, pbm: bool = False, holidays: list = None)</dt><dd><tt>:param&nbsp;datetime_value:&nbsp;datetime.datetime<br>
+:param&nbsp;trx_type:&nbsp;str,&nbsp;transaction&nbsp;type<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;axle&nbsp;count<br>
+:param&nbsp;status:&nbsp;str,&nbsp;status<br>
+self.assertEqual(hour,&nbsp;9)<br>
+:param&nbsp;pbm:&nbsp;bool,&nbsp;pay-by-mail&nbsp;status<br>
+:param&nbsp;holidays:&nbsp;list&nbsp;datetime.datetime,&nbsp;list&nbsp;of&nbsp;holiday&nbsp;dates</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>rate1</strong> = {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.25, 7: 1.5, 8: 1.5, 9: 1.25, ...}</dl>
+
+<dl><dt><strong>rate1_wknd</strong> = {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 7: 1.0, 8: 1.0, 9: 1.0, ...}</dl>
+
+<dl><dt><strong>rate2</strong> = {0: 1.5, 1: 1.5, 2: 1.5, 3: 1.5, 4: 1.5, 5: 1.5, 6: 1.9, 7: 2.25, 8: 2.25, 9: 1.9, ...}</dl>
+
+<dl><dt><strong>rate2_wknd</strong> = {0: 1.5, 1: 1.5, 2: 1.5, 3: 1.5, 4: 1.5, 5: 1.5, 6: 1.5, 7: 1.5, 8: 1.5, 9: 1.5, ...}</dl>
+
+<dl><dt><strong>rate3</strong> = {0: 2.0, 1: 2.0, 2: 2.0, 3: 2.0, 4: 2.0, 5: 2.0, 6: 2.5, 7: 3.0, 8: 3.0, 9: 2.5, ...}</dl>
+
+<dl><dt><strong>rate3_wknd</strong> = {0: 2.0, 1: 2.0, 2: 2.0, 3: 2.0, 4: 2.0, 5: 2.0, 6: 2.0, 7: 2.0, 8: 2.0, 9: 2.0, ...}</dl>
+
+<dl><dt><strong>rate4</strong> = {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 2.5, 6: 3.15, 7: 3.75, 8: 3.75, 9: 3.15, ...}</dl>
+
+<dl><dt><strong>rate4_wknd</strong> = {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 2.5, 6: 2.5, 7: 2.5, 8: 2.5, 9: 2.5, ...}</dl>
+
+<dl><dt><strong>rate5</strong> = {0: 3.0, 1: 3.0, 2: 3.0, 3: 3.0, 4: 3.0, 5: 3.0, 6: 3.75, 7: 4.5, 8: 4.5, 9: 3.75, ...}</dl>
+
+<dl><dt><strong>rate5_wknd</strong> = {0: 3.0, 1: 3.0, 2: 3.0, 3: 3.0, 4: 3.0, 5: 3.0, 6: 3.0, 7: 3.0, 8: 3.0, 9: 3.0, ...}</dl>
+
+<dl><dt><strong>rate_dict</strong> = {2: {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.25, 7: 1.5, 8: 1.5, 9: 1.25, ...}, 3: {0: 1.5, 1: 1.5, 2: 1.5, 3: 1.5, 4: 1.5, 5: 1.5, 6: 1.9, 7: 2.25, 8: 2.25, 9: 1.9, ...}, 4: {0: 2.0, 1: 2.0, 2: 2.0, 3: 2.0, 4: 2.0, 5: 2.0, 6: 2.5, 7: 3.0, 8: 3.0, 9: 2.5, ...}, 5: {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 2.5, 6: 3.15, 7: 3.75, 8: 3.75, 9: 3.15, ...}, 6: {0: 3.0, 1: 3.0, 2: 3.0, 3: 3.0, 4: 3.0, 5: 3.0, 6: 3.75, 7: 4.5, 8: 4.5, 9: 3.75, ...}}</dl>
+
+<dl><dt><strong>rate_dict_wknd</strong> = {2: {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 7: 1.0, 8: 1.0, 9: 1.0, ...}, 3: {0: 1.5, 1: 1.5, 2: 1.5, 3: 1.5, 4: 1.5, 5: 1.5, 6: 1.5, 7: 1.5, 8: 1.5, 9: 1.5, ...}, 4: {0: 2.0, 1: 2.0, 2: 2.0, 3: 2.0, 4: 2.0, 5: 2.0, 6: 2.0, 7: 2.0, 8: 2.0, 9: 2.0, ...}, 5: {0: 2.5, 1: 2.5, 2: 2.5, 3: 2.5, 4: 2.5, 5: 2.5, 6: 2.5, 7: 2.5, 8: 2.5, 9: 2.5, ...}, 6: {0: 3.0, 1: 3.0, 2: 3.0, 3: 3.0, 4: 3.0, 5: 3.0, 6: 3.0, 7: 3.0, 8: 3.0, 9: 3.0, ...}}</dl>
+
+<hr>
+Methods inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><a name="RateAssign99Legacy-calculate_base_rate"><strong>calculate_base_rate</strong></a>(self, date_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;, axles: int)</dt><dd><tt>Calculate&nbsp;base&nbsp;rate&nbsp;using&nbsp;datetime&nbsp;and&nbsp;axle&nbsp;information<br>
+:param&nbsp;date_value:&nbsp;datetime<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;axle&nbsp;count</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-get_base_rate"><strong>get_base_rate</strong></a>(self)</dt><dd><tt>:return:&nbsp;float,&nbsp;base&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-get_final_rate"><strong>get_final_rate</strong></a>(self)</dt><dd><tt>:return:&nbsp;float,&nbsp;final&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-pbm_adjustment"><strong>pbm_adjustment</strong></a>(self, base_rate, axles)</dt><dd><tt>:param&nbsp;base_rate:&nbsp;float,&nbsp;base&nbsp;rate<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;number&nbsp;of&nbsp;axles</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-set_holidays"><strong>set_holidays</strong></a>(self, holidays)</dt><dd><tt>Set&nbsp;holidays&nbsp;as&nbsp;list&nbsp;of&nbsp;datetime&nbsp;values<br>
+:param&nbsp;holidays:&nbsp;list</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-tag_status_adjustment"><strong>tag_status_adjustment</strong></a>(self, status: str)</dt><dd><tt>If&nbsp;tag&nbsp;is&nbsp;not&nbsp;a&nbsp;valid&nbsp;status,&nbsp;set&nbsp;rate&nbsp;based&nbsp;on&nbsp;an<br>
+image&nbsp;transaction<br>
+:param&nbsp;status:&nbsp;str,&nbsp;status</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-test"><strong>test</strong></a>(self)</dt></dl>
+
+<hr>
+Static methods inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><a name="RateAssign99Legacy-floor_hour"><strong>floor_hour</strong></a>(datetime_value: &lt;module 'datetime' from 'C:\\ProgramData\\Anaconda3\\lib\\datetime.py'&gt;) -&gt; int</dt><dd><tt>:param&nbsp;datetime_value:&nbsp;datetime&nbsp;value<br>
+:return:&nbsp;int,&nbsp;value&nbsp;between&nbsp;0&nbsp;and&nbsp;23&nbsp;for&nbsp;floor&nbsp;of&nbsp;hour</tt></dd></dl>
+
+<dl><dt><a name="RateAssign99Legacy-set_axles"><strong>set_axles</strong></a>(axles)</dt><dd><tt>Constrains&nbsp;the&nbsp;number&nbsp;of&nbsp;axles&nbsp;based&nbsp;on&nbsp;rate&nbsp;assignment&nbsp;parameters.<br>
+If&nbsp;less&nbsp;than&nbsp;2&nbsp;set&nbsp;to&nbsp;2,&nbsp;if&nbsp;more&nbsp;than&nbsp;6&nbsp;set&nbsp;to&nbsp;6.<br>
+:param&nbsp;axles:&nbsp;int,&nbsp;input&nbsp;number&nbsp;of&nbsp;axles<br>
+:return:&nbsp;int,&nbsp;axle&nbsp;count</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="TollData.html#RateAssign520">RateAssign520</a>:<br>
+<dl><dt><strong>__annotations__</strong> = {'base_rate': &lt;class 'float'&gt;, 'final_rate': &lt;class 'float'&gt;, 'holidays': &lt;class 'list'&gt;, 'non_valid_tag_status': &lt;class 'list'&gt;, 'pbm': &lt;class 'bool'&gt;, 'pbm_percent': &lt;class 'float'&gt;, 'pbm_status': &lt;class 'bool'&gt;, 'trx_type': &lt;class 'str'&gt;}</dl>
+
+<dl><dt><strong>base_rate</strong> = 0.0</dl>
+
+<dl><dt><strong>final_rate</strong> = 0.0</dl>
+
+<dl><dt><strong>holidays</strong> = []</dl>
+
+<dl><dt><strong>non_valid_tag_status</strong> = ['', 'I', 'L', 'S', 'U']</dl>
+
+<dl><dt><strong>pbm</strong> = False</dl>
+
+<dl><dt><strong>pbm_percent</strong> = 0.6</dl>
+
+<dl><dt><strong>pbm_status</strong> = False</dl>
+
+<dl><dt><strong>trx_type</strong> = ''</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TransactionFile">class <strong>TransactionFile</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#TransactionFile">TransactionFile</a>(filename:&nbsp;str)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;process&nbsp;transaction&nbsp;files&nbsp;from&nbsp;Kapsch&nbsp;toll&nbsp;system.&nbsp;Can&nbsp;process<br>
+both&nbsp;excel&nbsp;and&nbsp;csv&nbsp;files,&nbsp;excel&nbsp;files&nbsp;need&nbsp;to&nbsp;be&nbsp;in&nbsp;xlsx&nbsp;or&nbsp;xlsm&nbsp;format.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TransactionFile-__init__"><strong>__init__</strong></a>(self, filename: str)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="TransactionFile-get_df"><strong>get_df</strong></a>(self) -&gt; pandas.core.frame.DataFrame</dt><dd><tt>:return:&nbsp;dataframe</tt></dd></dl>
+
+<dl><dt><a name="TransactionFile-to_csv"><strong>to_csv</strong></a>(self)</dt><dd><tt>Output&nbsp;dataframe&nbsp;to&nbsp;csv</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'_agency_header_names': &lt;class 'list'&gt;, '_excel_file_types': &lt;class 'list'&gt;, '_filename': &lt;class 'str'&gt;, '_header_row': &lt;class 'int'&gt;, '_header_values': &lt;class 'list'&gt;, '_input_is_csv': &lt;class 'bool'&gt;, '_ocr_header_names': &lt;class 'list'&gt;, '_payment_header_names': &lt;class 'list'&gt;, '_sheet_name': &lt;class 'str'&gt;, '_sheet_names_list': &lt;class 'list'&gt;, ...}</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TripFile">class <strong>TripFile</strong></a>(<a href="TollData.html#TransactionFile">TransactionFile</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#TripFile">TripFile</a>(filename)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;process&nbsp;transaction&nbsp;files&nbsp;from&nbsp;Kapsch&nbsp;toll&nbsp;system.&nbsp;Can&nbsp;process<br>
+both&nbsp;excel&nbsp;and&nbsp;csv&nbsp;files,&nbsp;excel&nbsp;files&nbsp;need&nbsp;to&nbsp;be&nbsp;in&nbsp;xlsx&nbsp;or&nbsp;xlsm&nbsp;format.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="TollData.html#TripFile">TripFile</a></dd>
+<dd><a href="TollData.html#TransactionFile">TransactionFile</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="TripFile-__init__"><strong>__init__</strong></a>(self, filename)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="TollData.html#TransactionFile">TransactionFile</a>:<br>
+<dl><dt><a name="TripFile-get_df"><strong>get_df</strong></a>(self) -&gt; pandas.core.frame.DataFrame</dt><dd><tt>:return:&nbsp;dataframe</tt></dd></dl>
+
+<dl><dt><a name="TripFile-to_csv"><strong>to_csv</strong></a>(self)</dt><dd><tt>Output&nbsp;dataframe&nbsp;to&nbsp;csv</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="TollData.html#TransactionFile">TransactionFile</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="TollData.html#TransactionFile">TransactionFile</a>:<br>
+<dl><dt><strong>__annotations__</strong> = {'_agency_header_names': &lt;class 'list'&gt;, '_excel_file_types': &lt;class 'list'&gt;, '_filename': &lt;class 'str'&gt;, '_header_row': &lt;class 'int'&gt;, '_header_values': &lt;class 'list'&gt;, '_input_is_csv': &lt;class 'bool'&gt;, '_ocr_header_names': &lt;class 'list'&gt;, '_payment_header_names': &lt;class 'list'&gt;, '_sheet_name': &lt;class 'str'&gt;, '_sheet_names_list': &lt;class 'list'&gt;, ...}</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

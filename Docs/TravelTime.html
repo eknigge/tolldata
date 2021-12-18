@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module TravelTime</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>TravelTime</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cgrinder%5Cdesktop%5C_dev%5Ctolldata%5Ctraveltime.py">c:\users\grinder\desktop\_dev\tolldata\traveltime.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+</td><td width="25%" valign=top><a href="logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="pandas.html">pandas</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="TravelTime.html#TravelTime">TravelTime</a>
+</font></dt><dt><font face="helvetica, arial"><a href="TravelTime.html#TravelTimeUtil">TravelTimeUtil</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TravelTime">class <strong>TravelTime</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#TravelTime">TravelTime</a>(df:&nbsp;pandas.core.frame.DataFrame,&nbsp;datetime_field_name=None,&nbsp;plaza_field_name=None,&nbsp;trip_field_name=None,&nbsp;enable_logging=False,&nbsp;default_logging_level=20,&nbsp;toll_locations=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TravelTime-__init__"><strong>__init__</strong></a>(self, df: pandas.core.frame.DataFrame, datetime_field_name=None, plaza_field_name=None, trip_field_name=None, enable_logging=False, default_logging_level=20, toll_locations=None)</dt><dd><tt>Constructor&nbsp;travel&nbsp;time&nbsp;<a href="builtins.html#object">object</a>.&nbsp;Must&nbsp;create&nbsp;before&nbsp;travel&nbsp;times&nbsp;can&nbsp;be&nbsp;calculated.<br>
+:param&nbsp;df:&nbsp;Pandas&nbsp;Dataframe<br>
+:param&nbsp;datetime_field_name:&nbsp;Name&nbsp;of&nbsp;datetime&nbsp;value&nbsp;field&nbsp;of&nbsp;dataframe<br>
+:param&nbsp;plaza_field_name:&nbsp;Name&nbsp;of&nbsp;plaza&nbsp;field,&nbsp;node&nbsp;name,&nbsp;toll&nbsp;point&nbsp;name<br>
+:param&nbsp;trip_field_name:&nbsp;Name&nbsp;of&nbsp;trip&nbsp;field&nbsp;in&nbsp;dataframe<br>
+:param&nbsp;enable_logging:&nbsp;Bool.<br>
+:param&nbsp;default_logging_level:&nbsp;Int.&nbsp;Set&nbsp;logging&nbsp;level,&nbsp;default&nbsp;to&nbsp;INFO<br>
+:param&nbsp;toll_locations:&nbsp;Dict.&nbsp;Name:&nbsp;Location&nbsp;(ft).&nbsp;Used&nbsp;to&nbsp;calculate&nbsp;baseline&nbsp;values<br>
+for&nbsp;free&nbsp;flow&nbsp;traffic,&nbsp;and&nbsp;travel&nbsp;time&nbsp;between&nbsp;toll&nbsp;points.</tt></dd></dl>
+
+<dl><dt><a name="TravelTime-get_travel_time"><strong>get_travel_time</strong></a>(self, start_time: datetime.datetime, trip_definition: list) -&gt; float</dt><dd><tt>Return&nbsp;travel&nbsp;time&nbsp;for&nbsp;particular&nbsp;datetime&nbsp;instnaces.&nbsp;Requires&nbsp;creation&nbsp;of&nbsp;<a href="#TravelTime">TravelTime</a><br>
+Object&nbsp;and&nbsp;trip&nbsp;definition&nbsp;list.<br>
+:param&nbsp;start_time:&nbsp;datetime.datetime&nbsp;value<br>
+:param&nbsp;trip_definition:&nbsp;list&nbsp;of&nbsp;toll&nbsp;trip&nbsp;points<br>
+:return:&nbsp;Float.&nbsp;Travel&nbsp;times&nbsp;in&nbsp;seconds.</tt></dd></dl>
+
+<dl><dt><a name="TravelTime-get_travel_time_all_day"><strong>get_travel_time_all_day</strong></a>(self, trip_definition: list) -&gt; list</dt></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="TravelTime-average_travel_times"><strong>average_travel_times</strong></a>(input_dict: dict) -&gt; dict</dt></dl>
+
+<dl><dt><a name="TravelTime-check_single_date"><strong>check_single_date</strong></a>(datetime_value_list: list)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>FREE_FLOW_SPEED</strong> = 0.01048951048951049</dl>
+
+<dl><dt><strong>MINUTES_IN_DAY</strong> = 1439</dl>
+
+<dl><dt><strong>df_travel_time</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TravelTimeUtil">class <strong>TravelTimeUtil</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Static methods defined here:<br>
+<dl><dt><a name="TravelTimeUtil-average_timedelta_list"><strong>average_timedelta_list</strong></a>(values: list)</dt></dl>
+
+<dl><dt><a name="TravelTimeUtil-round_minutes"><strong>round_minutes</strong></a>(value: datetime.datetime)</dt></dl>
+
+<dl><dt><a name="TravelTimeUtil-round_seconds"><strong>round_seconds</strong></a>(value: datetime.datetime)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

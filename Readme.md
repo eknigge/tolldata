@@ -1,5 +1,6 @@
 # Introduction
-The purpose of this module is to automate and standardize processing of toll data by using `Pandas`, `Numpy`, and standard Python libraries. The classes contained in this module include
+The purpose of this module is to automate and standardize processing of toll data by using `Pandas`,
+ `Numpy`, and standard Python libraries. The classes contained in the `TollData` module include:
 - **Transaction**. This class processes transaction files and standardizes the input. 
 - **Trip**. This class processes transaction files and standardizes the input. 
 - **Rate Assignment**. This set of classes can assign time-of-day rates for SR 520 and 99 toll facilities. The rates assigned depend on the holiday schedule, number of axles, status of the transponder used, and time of day.
@@ -66,3 +67,33 @@ This analysis can be repeated a desired number of times and the `get_test_result
 
 # Testing 
 To test this module run `python -m pytest` which will execute the `test_TollData` script. The script is not an exhaustive set of tests, but it should be sufficient to validate major errors. 
+
+# Travel Time
+This module provides accurate travel times for user-defined trips. It does so by calculating all node-to-node
+travel, and then the total travel time based on the specified trip. The provided dataframe needs to include:
+unique trip identifiers, datetime information, and node names. Once a `TravelTime` object is created, travel 
+ times can be calculated using `get_travel_time_all_day` or `get_travel_time`. 
+
+The module also has a data from a real-world example. 
+
+Import the test file as a dataframe, then parse the datetime information. 
+```python
+    df = pd.read_csv('_hashed_export_test_data_trip.csv')
+    datetime_format = '%m/%d/%Y %H.%M.%S.%f'
+    df['DATETIME'] = pd.to_datetime(df['Trans Time'], format=datetime_format)
+```
+
+Create a travel time object. 
+```python
+    sample_travel_time = TravelTime(df)
+```
+
+Define the trip. 
+```python
+    trip_def = ['SB01', 'SB02', 'SB03', 'SB04', 'SB08', 'SB09', 'SB10']
+```
+
+Get travel times for the entire day.
+```python
+    travel_times = sample_travel_time.get_travel_time_all_day(trip_def)
+```
