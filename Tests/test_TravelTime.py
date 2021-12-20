@@ -4,7 +4,7 @@ import pandas as pd
 import datetime
 
 
-class TestUtil(TestCase):
+class TestTravelTime(TestCase):
     TEST_DATETIME = datetime.datetime(2021, 1, 1)
 
     def test_average_list_function_int(self):

@@ -1,0 +1,35 @@
+TRANSACTION_ID,DATETIME,PLAZA,PLATE,TRANSPONDER_ID,TRIP_ID,DESCRIPTION
+1,t1,NB01,BCJ1314,41471,1,full length nb trip
+2,t1 + delta*2,NB03,BCJ1314,41471,1,full length nb trip
+3,t1 + delta*3,NB04,BCJ1314,41471,1,full length nb trip
+4,t1 + delta*4,NB07,BCJ1314,41471,1,full length nb trip
+5,t1 + delta*5,NB08,BCJ1314,41471,1,full length nb trip
+6,t1 + delta*6,NB09,BCJ1314,41471,1,full length nb trip
+7,t1 + delta*7,NB10,BCJ1314,41471,1,full length nb trip
+8,t2,NB02,ABO1312,82241,2,trip split at nb05
+9,t2  + delta*2,NB03,ABO1312,82241,2,trip split at nb05
+10,t2  + delta*3,NB04,ABO1312,82241,2,trip split at nb05
+11,t2  + delta*4,NB05,ABO1312,82241,2,trip split at nb05
+12,t2  + delta*5,NB06,ABO1312,82241,3,trip split at nb05
+13,t2  + delta*6,NB07,ABO1312,82241,3,trip split at nb05
+14,t3,NB01,AOG7894,,4,mismatched license plate nb
+15,t3 + delta*2,NB03,AQG7894,,4,mismatched license plate nb
+16,t3 + delta*3,NB04,AOG7894,,4,mismatched license plate nb
+17,t4,SB01,MFB2375,39981,5,full length sb trip
+18,t4 + delta*2,SB02,MFB2375,39981,5,full length sb trip
+19,t4 + delta*3,SB03,MFB2375,39981,5,full length sb trip
+20,t4 + delta*4,SB04,MFB2375,39981,5,full length sb trip
+21,t4 + delta*5,SB05,MFB2375,39981,5,full length sb trip
+22,t4 + delta*6,SB08,MFB2375,39981,5,full length sb trip
+23,t4 + delta*7,SB09,MFB2375,39981,5,full length sb trip
+24,t4 + delta*8,SB10,MFB2375,39981,5,full length sb trip
+25,t5,SB05,JDB7639,57149,6,trip split sb06
+26,t5 + delta*2,SB06,JDB7639,57149,6,trip split sb06
+27,t5 + delta*3,SB07,JDB7639,57149,7,trip split sb06
+28,t5 + delta*4,SB08,JDB7639,57149,7,trip split sb06
+29,t6,SB01,IAB8379,,8,mismatch license plate sb
+30,t6 + delta*2,SB02,1488379,,8,mismatch license plate sb
+31,t6 + delta*3,SB03,IABB379,,8,mismatch license plate sb
+32,t7,NB01,AGM3942,39409,,plate and tag trip
+33,t7 + delta*2,NB03,4GM3942,39409,,plate and tag trip
+34,t7 + delta*3,NB04,AGM39A2,,,plate and tag trip
