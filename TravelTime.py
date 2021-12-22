@@ -52,7 +52,7 @@ class TravelTime:
     def _initialize_logging(value: bool, log_level: int):
         if value:
             logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                                datefmt='%m/%d/%Y %H:%M:%S', filename='output.log',
+                                datefmt='%m/%d/%Y %H:%M:%S', filename='travel_time_log.log',
                                 level=log_level)
 
     def _set_toll_locations(self, toll_locations: dict):
