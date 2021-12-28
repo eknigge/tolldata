@@ -1,46 +1,53 @@
-TRANSACTION_ID,DATETIME,PLAZA,PLATE,TRANSPONDER_ID,TRIP_ID,DESCRIPTION,TEST_ID,TIME_DESCRIPTION
-1,01/01/21 05:00 AM,NB01,BCJ1314,41471,1,full length nb trip,1,t1
-2,01/01/21 05:02 AM,NB03,BCJ1314,41471,1,full length nb trip,1,t1 + delta*2
-3,01/01/21 05:03 AM,NB04,BCJ1314,41471,1,full length nb trip,1,t1 + delta*3
-4,01/01/21 05:04 AM,NB07,BCJ1314,41471,1,full length nb trip,1,t1 + delta*4
-5,01/01/21 05:05 AM,NB08,BCJ1314,41471,1,full length nb trip,1,t1 + delta*5
-6,01/01/21 05:06 AM,NB09,BCJ1314,41471,1,full length nb trip,1,t1 + delta*6
-7,01/01/21 05:07 AM,NB10,BCJ1314,41471,1,full length nb trip,1,t1 + delta*7
-8,01/01/21 02:00 PM,NB02,ABO1312,82241,2,trip split at nb05,2,t2
-9,01/01/21 02:02 PM,NB03,ABO1312,82241,2,trip split at nb05,2,t2  + delta*2
-10,01/01/21 02:03 PM,NB04,ABO1312,82241,2,trip split at nb05,2,t2  + delta*3
-11,01/01/21 02:04 PM,NB05,ABO1312,82241,2,trip split at nb05,2,t2  + delta*4
-12,01/01/21 02:05 PM,NB06,ABO1312,82241,3,trip split at nb05,2,t2  + delta*5
-13,01/01/21 02:06 PM,NB07,ABO1312,82241,3,trip split at nb05,2,t2  + delta*6
-14,01/01/21 10:00 AM,NB01,AOG7894,0,4,mismatched license plate nb,3,t3
-15,01/01/21 10:02 AM,NB03,AQG7894,0,4,mismatched license plate nb,3,t3 + delta*2
-16,01/01/21 10:03 AM,NB04,AOG7894,0,4,mismatched license plate nb,3,t3 + delta*3
-17,01/01/21 12:30 PM,SB01,MFB2375,39981,5,full length sb trip,4,t4
-18,01/01/21 12:32 PM,SB02,MFB2375,39981,5,full length sb trip,4,t4 + delta*2
-19,01/01/21 12:33 PM,SB03,MFB2375,39981,5,full length sb trip,4,t4 + delta*3
-20,01/01/21 12:34 PM,SB04,MFB2375,39981,5,full length sb trip,4,t4 + delta*4
-21,01/01/21 12:35 PM,SB05,MFB2375,39981,5,full length sb trip,4,t4 + delta*5
-22,01/01/21 12:36 PM,SB08,MFB2375,39981,5,full length sb trip,4,t4 + delta*6
-23,01/01/21 12:37 PM,SB09,MFB2375,39981,5,full length sb trip,4,t4 + delta*7
-24,01/01/21 12:38 PM,SB10,MFB2375,39981,5,full length sb trip,4,t4 + delta*8
-25,01/01/21 08:50 AM,SB05,JDB7639,57149,6,trip split sb06,5,t5
-26,01/01/21 08:52 AM,SB06,JDB7639,57149,6,trip split sb06,5,t5 + delta*2
-27,01/01/21 08:53 AM,SB07,JDB7639,57149,7,trip split sb06,5,t5 + delta*3
-28,01/01/21 08:54 AM,SB08,JDB7639,57149,7,trip split sb06,5,t5 + delta*4
-29,01/01/21 11:00 AM,SB01,IAB8379,0,8,mismatch license plate sb,6,t6
-30,01/01/21 11:02 AM,SB02,1488379,0,8,mismatch license plate sb,6,t6 + detal*2
-31,01/01/21 11:03 AM,SB03,IABB379,0,8,mismatch license plate sb,6,t6 + detal*3
-32,01/01/21 03:10 PM,NB01,AGM3942,39409,9,plate and tag trip,7,t7
-33,01/01/21 03:12 PM,NB03,4GM3942,39409,9,plate and tag trip,7,t7 + delta*2
-34,01/01/21 03:13 PM,NB04,AGM39A2,0,9,plate and tag trip,7,t7 + delta*3
-35,01/01/21 08:00 AM,NB01,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8
-36,01/01/21 08:02 AM,NB03,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + delta * 2
-37,01/01/21 08:31 AM,NB01,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta
-38,01/01/21 08:32 AM,NB03,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta*2
-39,01/01/21 06:15 AM,NB07,NEC2057,36350,11,split trip direction change,9,t9
-40,01/01/21 06:17 AM,NB08,NEC2057,36350,11,split trip direction change,9,t9 + delta
-41,01/01/21 06:18 AM,SB01,NEC2057,36350,12,split trip direction change,9,t9 + delta *2
-42,01/01/21 06:19 AM,SB02,NEC2057,36350,12,split trip direction change,9,t9 + delta * 3
-43,01/01/21 07:45 AM,NB01,TVV1117,84515,13,"timeout split, same dir",10,t10
-44,01/01/21 08:16 AM,NB03,TVV1117,84515,13,"timeout split, same dir",10,t10 + timeout + delta
-45,01/01/21 08:17 AM,NB07,TVV1117,84515,14,"timeout split, same dir",10,t10 + timeout + delta * 2
+﻿TRANSACTION_ID,DATETIME,PLAZA,PLATE,TRANSPONDER_ID,TRIP_ID,DESCRIPTION,TEST_ID,TIME_DESCRIPTION
+1,44197.20833,NB01,BCJ1314,41471,1,full length nb trip,1,t1
+2,44197.20972,NB03,BCJ1314,41471,1,full length nb trip,1,t1 + delta*2
+3,44197.21042,NB04,BCJ1314,41471,1,full length nb trip,1,t1 + delta*3
+4,44197.21111,NB07,BCJ1314,41471,1,full length nb trip,1,t1 + delta*4
+5,44197.21181,NB08,BCJ1314,41471,1,full length nb trip,1,t1 + delta*5
+6,44197.2125,NB09,BCJ1314,41471,1,full length nb trip,1,t1 + delta*6
+7,44197.21319,NB10,BCJ1314,41471,1,full length nb trip,1,t1 + delta*7
+8,44197.58333,NB02,ABO1312,82241,2,trip split at nb05,2,t2
+9,44197.58472,NB03,ABO1312,82241,2,trip split at nb05,2,t2  + delta*2
+10,44197.58542,NB04,ABO1312,82241,2,trip split at nb05,2,t2  + delta*3
+11,44197.58611,NB05,ABO1312,82241,2,trip split at nb05,2,t2  + delta*4
+12,44197.58681,NB06,ABO1312,82241,3,trip split at nb05,2,t2  + delta*5
+13,44197.5875,NB07,ABO1312,82241,3,trip split at nb05,2,t2  + delta*6
+14,44197.41667,NB01,AOG7894,0,4,mismatched license plate nb,3,t3
+15,44197.41806,NB03,AQG7894,0,4,mismatched license plate nb,3,t3 + delta*2
+16,44197.41875,NB04,AOG7894,0,4,mismatched license plate nb,3,t3 + delta*3
+17,44197.52083,SB01,MFB2375,39981,5,full length sb trip,4,t4
+18,44197.52222,SB02,MFB2375,39981,5,full length sb trip,4,t4 + delta*2
+19,44197.52292,SB03,MFB2375,39981,5,full length sb trip,4,t4 + delta*3
+20,44197.52361,SB04,MFB2375,39981,5,full length sb trip,4,t4 + delta*4
+21,44197.52431,SB05,MFB2375,39981,5,full length sb trip,4,t4 + delta*5
+22,44197.525,SB08,MFB2375,39981,5,full length sb trip,4,t4 + delta*6
+23,44197.52569,SB09,MFB2375,39981,5,full length sb trip,4,t4 + delta*7
+24,44197.52639,SB10,MFB2375,39981,5,full length sb trip,4,t4 + delta*8
+25,44197.36806,SB05,JDB7639,57149,6,trip split sb06,5,t5
+26,44197.36944,SB06,JDB7639,57149,6,trip split sb06,5,t5 + delta*2
+27,44197.37014,SB07,JDB7639,57149,7,trip split sb06,5,t5 + delta*3
+28,44197.37083,SB08,JDB7639,57149,7,trip split sb06,5,t5 + delta*4
+29,44197.45833,SB01,IAB8379,0,8,mismatch license plate sb,6,t6
+30,44197.45972,SB02,1488379,0,8,mismatch license plate sb,6,t6 + detal*2
+31,44197.46042,SB03,IABB379,0,8,mismatch license plate sb,6,t6 + detal*3
+32,44197.63194,NB01,AGM3942,39409,9,plate and tag trip,7,t7
+33,44197.63333,NB03,4GM3942,39409,9,plate and tag trip,7,t7 + delta*2
+34,44197.63403,NB04,4GM39A2,0,9,plate and tag trip,7,t7 + delta*3
+35,44197.33333,NB01,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8
+36,44197.33472,NB03,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + delta * 2
+37,44197.35486,NB01,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta
+38,44197.35556,NB03,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta*2
+39,44197.26042,NB07,NEC2057,36350,11,split trip direction change,9,t9
+40,44197.26181,NB08,NEC2057,36350,11,split trip direction change,9,t9 + delta
+41,44197.2625,SB01,NEC2057,36350,12,split trip direction change,9,t9 + delta *2
+42,44197.26319,SB02,NEC2057,36350,12,split trip direction change,9,t9 + delta * 3
+43,44197.32292,NB01,TVV1117,84515,13,"timeout split, same dir",10,t10
+44,44197.34444,NB03,TVV1117,84515,13,"timeout split, same dir",10,t10 + timeout + delta
+45,44197.34514,NB07,TVV1117,84515,14,"timeout split, same dir",10,t10 + timeout + delta * 2
+46,44197.38542,NB01,ATG8613,83708,15,"plate misread, tag intermittent",11,t11
+47,44197.38611,NB03,4TG8613,0,15,"plate misread, tag intermittent",11,t11 + delta
+48,44197.38681,NB04,ATGB613,0,15,"plate misread, tag intermittent",11,t11 + delta * 2
+49,44197.3875,NB07,ATG8613,0,15,"plate misread, tag intermittent",11,t11 + delta * 3
+50,44197.38819,NB08,ATG8613,83708,15,"plate misread, tag intermittent",11,t11 + delta * 4
+51,44197.38889,NB09,ATGB6I3,0,15,"plate misread, tag intermittent",11,t11 + delta * 5
+52,44197.38958,NB10,ATG8613,83708,15,"plate misread, tag intermittent",11,t11 + delta * 6

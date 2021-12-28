@@ -27,6 +27,34 @@ class TripBuilder:
         self._validate_fields()
         self._set_trip_timeout(trip_timeout)
 
+    def _get_related_trips(self, transaction_id: int):
+        """
+        indefinite loop, track previous search values. Do not perform serach
+        if previous values have been used,
+        search should be recursive since it is possible to discover new information
+        after first search is complete
+
+        concat results as search continues
+        """
+        pass
+
+    def _build_trips(self):
+        """
+        1. get relevant transactions
+        2. sort by time
+        3. calculate time deltas
+        4. determine directional changes
+        5. facility changes
+        6. calculate trip breaks
+            exit nodes
+            time delta > threshold
+            directional changes
+            facility change
+        7. add trip ID
+        8. remove transactions from data frame
+        """
+        pass
+
     @staticmethod
     def _initialize_logging(value: bool, log_level: int):
         if value:
