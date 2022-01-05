@@ -21,6 +21,7 @@ class PlateCombinatorics:
 
     def __init__(self, plate=''):
         self._plate = plate
+        self._result_list = []
 
     def set_plate(self, plate: str):
         """
