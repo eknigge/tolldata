@@ -97,3 +97,26 @@ Get travel times for the entire day.
 ```python
     travel_times = sample_travel_time.get_travel_time_all_day(trip_def)
 ```
+
+# Trip Builder
+This module allows the grouping of transactions into trips. It takes in a Pandas DataFrame and requires transaction ID, datetime, plaza, transponder ID, and plate ID fields. This class includes detailed logging that can be enabled.
+
+Using this class is very simple. First define a list of exit nodes. The exit nodes define locations where trips automatically end. The example exit notes are from a real-world system. 
+
+```python
+    import TripBuilder as tb
+    df = [DataFrame]
+    exit_nodes = ['NB10', 'NB05', 'SB06', 'SB10', 'SB11']
+```
+
+Import the dataframe and create a `TripBuilder` object
+```python
+    build = tb.TripBuilder(df, exit_nodes=exit_nodes)
+```
+
+Run the build and get the results
+```python
+    build = tb.TripBuilder(df, exit_nodes=exit_nodes)
+    build.build_trips()
+    df_result = build.get_dataframe()
+```
