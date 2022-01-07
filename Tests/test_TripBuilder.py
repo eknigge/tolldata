@@ -4,7 +4,6 @@ import TripBuilder as tb
 import numpy as np
 import random
 import datetime
-import xlrd
 
 
 class TestTripBuilder(TestCase):
@@ -65,7 +64,7 @@ class TestTripBuilder(TestCase):
         self.assertEqual(expected_result, result)
 
     def test_break_point_exit_node(self):
-        expected_result = [False, True, False, False]
+        expected_result = [False, False, True, False]
         exit_nodes = ['SB06']
         df = self.get_test_dataframe().iloc[24:28]
         df = df.reset_index()
@@ -91,7 +90,7 @@ class TestTripBuilder(TestCase):
         self.assertEqual(expected_result, result)
 
     def test_break_point_timeout_trip_id_check(self):
-        expected_result = [1, 1, 2, 2]
+        expected_result = [0, 0, 1, 1]
         exit_nodes = ['SB06']
         df = self.get_test_dataframe().iloc[34:38]
         df = df.reset_index()
@@ -124,11 +123,14 @@ class TestTripBuilder(TestCase):
 
     def test_build_all_trips(self):
         df = self.get_test_dataframe()
+        expected_trip_ids = df['TRIP_ID'].tolist()
         exit_nodes = ['NB10', 'NB05', 'SB06', 'SB10', 'SB11']
         build = tb.TripBuilder(df, exit_nodes=exit_nodes)
         build.build_trips()
         df_output = build.get_dataframe()
-        a = 12
+        build_trip_ids = df_output['TRIP_ID_BUILD'].tolist()
+
+        self.assertEqual(expected_trip_ids, build_trip_ids)
 
     def get_test_dataframe(self):
         df = pd.read_csv(self.test_data_filename)

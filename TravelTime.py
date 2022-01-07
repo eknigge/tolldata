@@ -6,6 +6,9 @@ import numpy as np
 
 
 class TravelTime:
+    """
+    Utilize Pandas DataFrame to calculate travel time between nodes. Requires providing node, and node location in feet.
+    """
     df_travel_time = None
     FREE_FLOW_SPEED = 3600 / 65 / 5280  # seconds / foot
     MINUTES_IN_DAY = 60 * 24 - 1

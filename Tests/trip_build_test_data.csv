@@ -35,19 +35,19 @@ TRANSACTION_ID,DATETIME,PLAZA,PLATE,TRANSPONDER_ID,TRIP_ID,DESCRIPTION,TEST_ID,T
 34,1/1/2021 15:13,NB04,4GM39A2,,9,plate and tag trip,7,t7 + delta*3
 35,1/1/2021 8:00,NB01,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8
 36,1/1/2021 8:02,NB03,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + delta * 2
-37,1/1/2021 8:33,NB01,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta*3
-38,1/1/2021 8:34,NB03,PNS4654,25424,10,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta*4
-39,1/1/2021 6:15,NB07,NEC2057,36350,11,split trip direction change,9,t9
-40,1/1/2021 6:17,NB08,NEC2057,36350,11,split trip direction change,9,t9 + delta
-41,1/1/2021 6:18,SB01,NEC2057,36350,12,split trip direction change,9,t9 + delta *2
-42,1/1/2021 6:19,SB02,NEC2057,36350,12,split trip direction change,9,t9 + delta * 3
-43,1/1/2021 7:45,NB01,TVV1117,84515,13,"timeout split, same dir",10,t10
-44,1/1/2021 8:16,NB03,TVV1117,84515,13,"timeout split, same dir",10,t10 + timeout + delta
-45,1/1/2021 8:17,NB07,TVV1117,84515,14,"timeout split, same dir",10,t10 + timeout + delta * 2
-46,1/1/2021 9:15,NB01,ATG8613,83708,15,"plate misread, tag intermittent",11,t11
-47,1/1/2021 9:16,NB03,4TG8613,,15,"plate misread, tag intermittent",11,t11 + delta
-48,1/1/2021 9:17,NB04,ATGB613,,15,"plate misread, tag intermittent",11,t11 + delta * 2
-49,1/1/2021 9:18,NB07,ATG8613,,15,"plate misread, tag intermittent",11,t11 + delta * 3
-50,1/1/2021 9:19,NB08,ATG8613,83708,15,"plate misread, tag intermittent",11,t11 + delta * 4
-51,1/1/2021 9:20,NB09,ATGB6I3,,15,"plate misread, tag intermittent",11,t11 + delta * 5
-52,1/1/2021 9:21,NB10,ATG8613,83708,15,"plate misread, tag intermittent",11,t11 + delta * 6
+37,1/1/2021 8:33,NB01,PNS4654,25424,11,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta*3
+38,1/1/2021 8:34,NB03,PNS4654,25424,11,"split trip from timeout, same plaza and dir",8,t8 + timeout + delta*4
+39,1/1/2021 6:15,NB07,NEC2057,36350,12,split trip direction change,9,t9
+40,1/1/2021 6:17,NB08,NEC2057,36350,12,split trip direction change,9,t9 + delta
+41,1/1/2021 6:18,SB01,NEC2057,36350,13,split trip direction change,9,t9 + delta *2
+42,1/1/2021 6:19,SB02,NEC2057,36350,13,split trip direction change,9,t9 + delta * 3
+43,1/1/2021 7:45,NB01,TVV1117,84515,14,"timeout split, same dir",10,t10
+44,1/1/2021 8:16,NB03,TVV1117,84515,15,"timeout split, same dir",10,t10 + timeout + delta
+45,1/1/2021 8:17,NB07,TVV1117,84515,15,"timeout split, same dir",10,t10 + timeout + delta * 2
+46,1/1/2021 9:15,NB01,ATG8613,83708,16,"plate misread, tag intermittent",11,t11
+47,1/1/2021 9:16,NB03,4TG8613,,16,"plate misread, tag intermittent",11,t11 + delta
+48,1/1/2021 9:17,NB04,ATGB613,,16,"plate misread, tag intermittent",11,t11 + delta * 2
+49,1/1/2021 9:18,NB07,ATG8613,,16,"plate misread, tag intermittent",11,t11 + delta * 3
+50,1/1/2021 9:19,NB08,ATG8613,83708,16,"plate misread, tag intermittent",11,t11 + delta * 4
+51,1/1/2021 9:20,NB09,ATGB6I3,,16,"plate misread, tag intermittent",11,t11 + delta * 5
+52,1/1/2021 9:21,NB10,ATG8613,83708,16,"plate misread, tag intermittent",11,t11 + delta * 6
