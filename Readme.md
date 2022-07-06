@@ -1,25 +1,14 @@
 # Introduction
-The purpose of this module is to automate and standardize processing of toll data by using `Pandas`,
- `Numpy`, and standard Python libraries. The classes contained in the `TollData` module include:
-- **Transaction**. This class processes transaction files and standardizes the input. 
-- **Trip**. This class processes transaction files and standardizes the input. 
-- **Rate Assignment**. This set of classes can assign time-of-day rates for SR 520 and 99 toll facilities. The rates assigned depend on the holiday schedule, number of axles, status of the transponder used, and time of day.
-- **AVI Validation**. This class performs an AVI analysis given a known set of plate/tags (key:value) pairs. If a tag/transponder is missed during a read it is noted in the output.
-- **AVI Test**. This class extends the functionality of the `AVI Validation` class by conducting statistically validated random tests to find the standard deviation from random sample sets. 
-- **Plate Combinatorics**. This helper class computes plate combinatorics, and is useful for other classes in determining common OCR errors found in other classes. 
+The purpose of this module is to import, summarize, analyze, and export toll data and analysis. Pandas and numpy libraries are used extensively. 
 
-# Transaction Files
-Transaction files are one of the most common data formats for toll data. This class can process both excel and csv files, and works for both xlsm or xls files. The processed files can be exported as `DataFrames` or a `csv` file.
+## Transaction Files
+Transaction files are the most basic storage unit of toll data and contain information such as time of travel, axle count, transponder (if present), license plate, etc. Both Excel and csv files can be processed, and data is exported in memory as a DataFrame or to disk as a csv file. 
 
-# Trip Files
-Trip files are similar to transaction files, but there are a few differences. For single-point toll facilities there is the addition of an assigned fare, but little else is changed. For multi-point facilities
-information will be grouped by trips, so the transactions that make up a trip will be grouped together. Multi-point toll facility trip files will also contain information about the entry/exit point, the assigned rate, and final trip level OCR value assigned. 
+## Trip Files
+Trip files contain similar information to transaction files, but have a few differences. The trip files contain the fare assigned to a trip, as well as the final OCR value that will be sent to the customer service system. Toll trips will multiple toll transactions have transaction information aggregated by a trip ID. 
 
-This class inherits the methods and functionality from the `TransactionFile` class, but uses a different dictionary for some processing values since the naming conventions between the two files are dissimilar. 
-
-
-# Rate Assignment
-Rate assignment is relatively straightforward for time-of-day facilities. If you know some basic parameters it is possible to calculate the rate that should be assigned. The relevant parameters are as follows:
+## Rate Assignment
+Rate assignment is relatively straightforward for time-of-day facilities. If you know the following parameters you can assign a value. 
 - Datetime
 - Transaction type
 - Axles
@@ -27,35 +16,25 @@ Rate assignment is relatively straightforward for time-of-day facilities. If you
 - Pay-by-Mail status
 - Holidays 
 
-The rate assignment classes allow you to determine both a `base rate` and `final rate`. The `base rate` is the rate without adjustment for time-of-day or pay-by-mail for vehicles that do not have a valid/active transponder. 
-## Rate Assign 520
-This class allows you to determine the rate for transactions occuring on the SR 520 bridge. 
+One exception is that it is not possible to know whether a vehicle will be pay by plate or pay by mail, so this can be assigned using a probability model, or assigned the default pay by mail rate. 
 
-## Rate Assign 99
-This class inherits from the 520 class but uses the rate table information for the SR 99 facility. Since these two roadways operate nearly identically there are no other changes between these classes.
-
-The rates are updated to be the latest rates, effective October 1, 2021.
-
-## Rate Assign 99 Legacy
-This class inherits from the 520 class and uses the rate information prior to October 1, 2021. This class should only be used to validate rates prior to this effective date. 
-
-# Plate Combinatorics
+## Plate Combinatorics
 This class provides a simple way of determining a set of possible OCR mistakes from common errors. For example, the value of `B` is often mistaken for the numerical value of `8`. A plate with a value of `88` would return the combinations of `BB`, `B8`, `8B`, and `88`. This process is executed for arbitrarily complex plates, using a lookup table of common errors. 
 
-# AVI Validation
-This class tests whether a plate is read without a tag. The read threshold, which represents the number of times a plate and tag are seen together can be set to constrain which transactions are flagged. The input `DataFrame` is required to have the following fields:
-- TAG_ID, represending the transponder ID
-- PLATE, for the plate value without state identifier
-- TRX_ID, for the transaction identification number
+## AVI Validation
+This class performs automated AVI testing, essentially whether a plate is read without its associated tag. The read threshold, which represents the number of times a plate and tag are seen together can be set to constrain the number of errors detected.  The input data is required to have the following fields and be in csv of excel format:
+- **TAG_ID**, represending the transponder ID
+- **PLATE**, for the plate value without state identifier
+- **TRX_ID**, for the transaction identification number
 
-The output `DataFrame` includes the new fields `AVI_MISMATCH` set to `True` or `False` based on the result of the test, and the field `MISSED_TAG_ID` for the ID of the missed tag, if applicable.
+The output includes the new fields **AVI_MISMATCH** set to `True` or `False` based on the result of the test, and the field **MISSED_TAG_ID** for the ID of the missed tag, if applicable.
 
-A `csv` file can be used to as a lookup `dictionary`, or it can be generated automatically. The API also allows users to state whether they want to use a static dictionary that is not updated as the test progress, or one that continuously updated. 
+A csv file can be used to as a lookup dictionary, or the dictionary can be genereated as the analysis is performed. The API also allows users to state whether they want to use a static dictionary that is **not** updated as the test progress, or one that is continuously updated. 
 
-# AVI Test
-This class performs an AVI validation test, which is similar to the `AVI Validation`, but made to be more extensible and easier to repeat tests. A minimum of 30 days of data is required, without modifying the source. This is based on previous experience, and that a large statistical sample is required for validation. 
+## AVI Test
+This class performs an AVI validation test, which is similar to the `AVI Validation`, but made to be more extensible and easier to repeat tests. A minimum of 30 days of data is required, without modifying the source. This is based on previous experience, and that a large statistical sample is required for better validation. 
 
-The test takes some time to execute since it imports a large number of files to create a single `DataFrame` object. The results of the first run are exported ot a `.pkl` file. If an existing `.pkl` file exists this step can be skipped, and the runtime is reduced. 
+The test takes some time to execute since it imports a large number of files. The results of the first run are exported ot a `.pkl` file. If an existing `.pkl` file exists this step can be skipped, and the runtime is reduced. 
 
 The process works as follows: 
 1. Import files for analysis, or using existing data
@@ -65,13 +44,9 @@ The process works as follows:
 
 This analysis can be repeated a desired number of times and the `get_test_result` method can be used to aggregate this information.
 
-# Testing 
-To test this module run `python -m pytest` which will execute the `test_TollData` script. The script is not an exhaustive set of tests, but it should be sufficient to validate major errors. 
 
-# Travel Time
-This module provides accurate travel times for user-defined trips. It does so by calculating all node-to-node
-travel, and then the total travel time based on the specified trip. The provided dataframe needs to include:
-unique trip identifiers, datetime information, and node names. Once a `TravelTime` object is created, travel 
+## Travel Time
+This module provides accurate travel times for user-defined trips. It does so by calculating all node-to-node travel, and then the total travel time based on the specified trip. The provided dataframe needs to include: unique trip identifiers, datetime information, and node names. Once a `TravelTime` object is created, travel 
  times can be calculated using `get_travel_time_all_day` or `get_travel_time`. 
 
 The module also has a data from a real-world example. 
@@ -98,7 +73,7 @@ Get travel times for the entire day.
     travel_times = sample_travel_time.get_travel_time_all_day(trip_def)
 ```
 
-# Trip Builder
+## Trip Builder
 This module allows the grouping of transactions into trips. It takes in a Pandas DataFrame and requires transaction ID, datetime, plaza, transponder ID, and plate ID fields. This class includes detailed logging that can be enabled.
 
 Using this class is very simple. First define a list of exit nodes. The exit nodes define locations where trips automatically end. The example exit notes are from a real-world system. 
@@ -120,3 +95,6 @@ Run the build and get the results
     build.build_trips()
     df_result = build.get_dataframe()
 ```
+
+# Testing
+To test this module run `python -m pytest` in the toll level directory `tolldata`. This will execute the tests scripts for the various modules. While the tests are not very extensive they should be able to catch major errors from changes. 

@@ -1,8 +1,18 @@
+import sys
+import os
+
+sys.path.append(os.getcwd() + '\\tolldata')
 from unittest import TestCase
-import TollData as td
 import datetime
-import TollData as ra
 import pandas as pd
+
+# PyCharm Tests, uncomment to run
+# from tolldata import TollData as ra
+# from tolldata import TollData as td
+
+# Pytest, uncomment to run
+import TollData as ra
+import TollData as td
 
 
 class TestplateCombinatorics(TestCase):
@@ -42,7 +52,7 @@ class TestRateAssign520(TestCase):
         trx_type = 'AVI'
         axles = 2
         status = 'V'
-        rate = ra.RateAssign520(time, trx_type, axles, status).get_final_rate()
+        rate = ra.AssignRate(time, trx_type, axles, status).get_final_rate()
         self.assertEqual(rate, 4.3)
 
     def test_morning_holiday_valid_avi_2axle(self):
@@ -50,8 +60,8 @@ class TestRateAssign520(TestCase):
         trx_type = 'AVI'
         axles = 2
         status = 'V'
-        rate = ra.RateAssign520(time, trx_type, axles, status,
-                                holidays=self._holiday_list).get_final_rate()
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 2.05)
 
     def test_morning_holiday_img_3axle(self):
@@ -59,8 +69,8 @@ class TestRateAssign520(TestCase):
         trx_type = 'IMG'
         axles = 3
         status = ''
-        rate = ra.RateAssign520(time, trx_type, axles, status,
-                                holidays=self._holiday_list).get_final_rate()
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 6.10)
 
     def test_evening_holiday_avi_lost_4axle(self):
@@ -68,13 +78,13 @@ class TestRateAssign520(TestCase):
         trx_type = 'AVI'
         axles = 4
         status = 'L'
-        rate = ra.RateAssign520(time, trx_type, axles, status,
-                                holidays=self._holiday_list).get_final_rate()
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list).get_final_rate()
         self.assertEqual(rate, 8.10)
 
     def test_floor_hour(self):
         time = datetime.datetime(2020, 9, 7, hour=9, minute=15, second=8)
-        hour = ra.RateAssign520.floor_hour(time)
+        hour = ra.AssignRate.floor_hour(time)
         self.assertEqual(hour, 9)
 
 
@@ -123,91 +133,46 @@ class TestRateAssign99(TestCase):
         trx_type = 'AVI'
         axles = 2
         status = 'V'
-        rate = ra.RateAssign99(time, trx_type, axles, status).get_final_rate()
-        self.assertEqual(rate, 1.45)
+        rate = ra.AssignRate(time, trx_type, axles,
+                             status, rate_file='toll_rates_99.json').get_final_rate()
+        self.assertEqual(rate, 1.50)
 
     def test_morning_holiday_valid_avi_2axle(self):
         time = datetime.datetime(2020, 7, 3, hour=9, minute=15, second=8)
         trx_type = 'AVI'
         axles = 2
         status = 'V'
-        rate = ra.RateAssign99(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 1.15)
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list,
+                             rate_file='toll_rates_99.json').get_final_rate()
+        self.assertEqual(rate, 1.20)
 
     def test_morning_image_3axle(self):
         time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
         trx_type = 'IMG'
         axles = 3
         status = ''
-        rate = ra.RateAssign99(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 5.2)
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list,
+                             rate_file='toll_rates_99.json').get_final_rate()
+        self.assertEqual(rate, 5.25)
 
     def test_morning_image_6axle(self):
         time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
         trx_type = 'IMG'
         axles = 6
         status = ''
-        rate = ra.RateAssign99(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 10.35)
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list,
+                             rate_file='toll_rates_99.json').get_final_rate()
+        self.assertEqual(rate, 10.50)
 
     def test_evening_holiday_avi_lost_4axle(self):
         time = datetime.datetime(2020, 1, 1, hour=19, minute=15, second=8)
         trx_type = 'AVI'
         axles = 4
         status = 'L'
-        rate = ra.RateAssign99(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 6.3)
-
-
-class TestRateAssign99Legacy(TestCase):
-    _holiday_list = [datetime.date(2020, 7, 3),
-                     datetime.date(2020, 9, 7),
-                     datetime.date(2020, 1, 1)]
-
-    def test_morning_valid_avi_2axle(self):
-        time = datetime.datetime(2020, 1, 1, hour=9, minute=0, second=30)
-        trx_type = 'AVI'
-        axles = 2
-        status = 'V'
-        rate = ra.RateAssign99Legacy(time, trx_type, axles, status).get_final_rate()
-        self.assertEqual(rate, 1.25)
-
-    def test_morning_holiday_valid_avi_2axle(self):
-        time = datetime.datetime(2020, 7, 3, hour=9, minute=15, second=8)
-        trx_type = 'AVI'
-        axles = 2
-        status = 'V'
-        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 1.00)
-
-    def test_morning_image_3axle(self):
-        time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
-        trx_type = 'IMG'
-        axles = 3
-        status = ''
-        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 4.9)
-
-    def test_morning_image_6axle(self):
-        time = datetime.datetime(2020, 1, 31, hour=9, minute=15, second=8)
-        trx_type = 'IMG'
-        axles = 6
-        status = ''
-        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 9.75)
-
-    def test_evening_holiday_avi_lost_4axle(self):
-        time = datetime.datetime(2020, 1, 1, hour=19, minute=15, second=8)
-        trx_type = 'AVI'
-        axles = 4
-        status = 'L'
-        rate = ra.RateAssign99Legacy(time, trx_type, axles, status,
-                               holidays=self._holiday_list).get_final_rate()
-        self.assertEqual(rate, 6.0)
+        rate = ra.AssignRate(time, trx_type, axles, status,
+                             holidays=self._holiday_list,
+                             rate_file='toll_rates_99.json').get_final_rate()
+        self.assertEqual(rate, 6.4)

@@ -1,13 +1,21 @@
+import sys
+import os
+sys.path.append(os.getcwd() + '\\tolldata')
+
 from unittest import TestCase
 import pandas as pd
-import TripBuilder as tb
 import numpy as np
 import random
 import datetime
 
+# PyCharm Tests, uncomment to run
+# from tolldata import TripBuilder as tb
+
+# Pytest, uncomment to run
+import TripBuilder as tb
 
 class TestTripBuilder(TestCase):
-    test_data_filename = 'trip_build_test_data.csv'
+    test_data_filename = os.getcwd() + '\\Tests\\trip_build_test_data.csv'
 
     def test_get_related_trips_1(self):
         expected_transactions = {1, 2, 3, 4, 5, 6, 7}

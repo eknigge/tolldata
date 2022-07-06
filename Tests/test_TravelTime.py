@@ -1,8 +1,15 @@
+import sys
+import os
+sys.path.append(os.getcwd() + '\\tolldata')
 from unittest import TestCase
-import TravelTime as tt
 import pandas as pd
 import datetime
 
+# PyCharm Tests, uncomment to run
+# from tolldata import TravelTime as tt
+
+# Pytest, uncomment to run
+import TravelTime as tt
 
 class TestTravelTime(TestCase):
     TEST_DATETIME = datetime.datetime(2021, 1, 1)

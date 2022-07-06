@@ -74,7 +74,7 @@ class TripBuilder:
                     plates.add(plate)
                     df_add = self._df[self._df['PLATE'] == plate]
                     if df_add.shape[0] > 0:
-                        logging('Add additional records: ' + str(df_add.shape[0]))
+                        logging.debug('Add additional records: ' + str(df_add.shape[0]))
                         df = pd.concat([df, df_add])
                         df = df.drop_duplicates(subset='TRANSACTION_ID')
                     elements = df.shape[0]
@@ -84,7 +84,7 @@ class TripBuilder:
                 tags.add(tag_position)
                 df_add = self._df[self._df['TRANSPONDER_ID'] == tag_position]
                 if df_add.shape[0] > 0:
-                    logging('Add additional records: ' + str(df_add.shape[0]))
+                    logging.debug('Add additional records: ' + str(df_add.shape[0]))
                     df = pd.concat([df, df_add])
                     df = df.drop_duplicates(subset='TRANSACTION_ID')
                 elements = df.shape[0]
