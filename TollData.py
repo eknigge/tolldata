@@ -397,7 +397,10 @@ class AVIValidation:
                 if 'PLATE' in row:
                     continue
                 else:
-                    self._plate_tag_dict[row[0]] = [float(row[1]), int(row[2])]
+                    try:
+                        self._plate_tag_dict[row[0]] = [float(row[1]), int(row[2])]
+                    except ValueError:
+                        continue
 
     def __validate_dataframe(self, dataframe: pd.DataFrame):
         """
